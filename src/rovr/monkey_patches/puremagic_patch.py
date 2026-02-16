@@ -1,8 +1,8 @@
-import os
+import json
 from binascii import unhexlify
+from importlib import resources
 
 import puremagic
-import ujson
 
 try:
     if puremagic.__version__ != "1.30":
@@ -27,11 +27,11 @@ def _magic_data() -> tuple[
     dict[bytes, list[puremagic.PureMagic]],
 ]:
     """Read the magic file"""  # noqa: DOC201
-    filename = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "magic_data.json"
+    data = json.loads(
+        resources.files("rovr.monkey_patches")
+        .joinpath("magic_data.json")
+        .read_text("utf-8")
     )
-    with open(filename, encoding="utf-8") as f:
-        data = ujson.load(f)
     headers = sorted(
         (puremagic.main._create_puremagic(x) for x in data["headers"]),
         key=lambda x: x.byte_match,

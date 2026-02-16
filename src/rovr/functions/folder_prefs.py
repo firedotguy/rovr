@@ -1,8 +1,7 @@
+import json
 import os
 from os import path
 from typing import TypedDict, cast
-
-import ujson
 
 from rovr.variables.constants import SortByOptions
 from rovr.variables.maps import VAR_TO_DIR
@@ -36,7 +35,7 @@ def load_folder_prefs() -> dict[str, FolderPrefDict]:
 
     try:
         with open(prefs_file, "r", encoding="utf-8") as f:
-            loaded = ujson.load(f)
+            loaded = json.load(f)
         if not isinstance(loaded, dict):
             # some stupid people will do some stupid things
             loaded = {}
@@ -56,7 +55,7 @@ def load_folder_prefs() -> dict[str, FolderPrefDict]:
                 expanded[folder_path] = cast(FolderPrefDict, pref)
 
         folder_prefs = expanded
-    except (IOError, ValueError, ujson.JSONDecodeError):
+    except (IOError, ValueError, json.JSONDecodeError):
         folder_prefs = {}
 
     return folder_prefs
@@ -77,7 +76,7 @@ def save_folder_prefs() -> None:
 
     try:
         with open(prefs_file, "w", encoding="utf-8") as f:
-            ujson.dump(collapsed, f, escape_forward_slashes=False, indent=2)
+            json.dump(collapsed, f, indent=2)
     except (IOError, OSError):
         # something beyond our control
         pass

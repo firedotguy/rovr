@@ -1,8 +1,8 @@
+import json
 import os
+from copy import deepcopy
 from os import path
 from typing import TypedDict, cast
-
-import ujson
 
 from rovr.variables.maps import (
     VAR_TO_DIR,
@@ -53,17 +53,17 @@ def load_pins() -> PinsDict:
         }
         try:
             with open(user_pins_file_path, "w") as f:
-                ujson.dump(tempins, f, escape_forward_slashes=False, indent=2)
+                json.dump(tempins, f, indent=2)
         except IOError as exc:
             dump_exc(None, exc)
 
     try:
         with open(user_pins_file_path, "r") as f:
-            loaded = ujson.load(f)
+            loaded = json.load(f)
         if not isinstance(loaded, dict):
             raise ValueError()
         tempins = cast(PinsDict, loaded)
-    except (IOError, ValueError, ujson.JSONDecodeError):
+    except (IOError, ValueError, json.JSONDecodeError):
         # Reset pins on corrupt or something else happened
         tempins = {
             "default": [
@@ -118,7 +118,7 @@ def add_pin(pin_name: str, pin_path: str | bytes) -> None:
     """
     global pins
 
-    pins_to_write = ujson.loads(ujson.dumps(pins))
+    pins_to_write = deepcopy(pins)
 
     pin_path_normalized = normalise(pin_path)
     pins_to_write.setdefault("pins", []).append({
@@ -141,7 +141,7 @@ def add_pin(pin_name: str, pin_path: str | bytes) -> None:
     try:
         user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
         with open(user_pins_file_path, "w") as f:
-            ujson.dump(pins_to_write, f, escape_forward_slashes=False, indent=2)
+            json.dump(pins_to_write, f, indent=2)
     except IOError as exc:
         dump_exc(None, exc)
 
@@ -157,7 +157,7 @@ def remove_pin(pin_path: str | bytes) -> None:
     """
     global pins
 
-    pins_to_write = ujson.loads(ujson.dumps(pins))
+    pins_to_write = deepcopy(pins)
 
     pin_path_normalized = normalise(pin_path)
     if "pins" in pins_to_write:
@@ -182,7 +182,7 @@ def remove_pin(pin_path: str | bytes) -> None:
     try:
         user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
         with open(user_pins_file_path, "w") as f:
-            ujson.dump(pins_to_write, f, escape_forward_slashes=False, indent=2)
+            json.dump(pins_to_write, f, indent=2)
     except IOError as exc:
         dump_exc(None, exc)
 

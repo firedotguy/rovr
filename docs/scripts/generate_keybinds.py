@@ -1,9 +1,9 @@
+import json
 from shutil import which
 from subprocess import CalledProcessError, run
 from time import perf_counter
 
 import tomli
-import ujson
 from humanize import precisedelta
 from rich.console import Console
 from rich.traceback import Traceback
@@ -74,7 +74,7 @@ try:
     with open("src/rovr/config/keybinds/sane.toml", "rb") as file:
         sane_binds: dict = tomli.load(file)["keybinds"]
     with open("src/rovr/config/schema.json", "r", encoding="utf-8") as file:
-        sub_schema: dict = ujson.load(file)["properties"]["keybinds"]["properties"]
+        sub_schema: dict = json.load(file)["properties"]["keybinds"]["properties"]
     sub_schemas: dict[str, dict] = {}
     sub_keys: dict[str, dict] = {}
     for key, values in sub_schema.items():

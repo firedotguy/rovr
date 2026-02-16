@@ -1,3 +1,4 @@
+import json
 import os
 from importlib import resources
 from importlib.metadata import PackageNotFoundError, version
@@ -7,7 +8,6 @@ from typing import Callable, Literal, cast
 
 import fastjsonschema
 import tomli
-import ujson
 from fastjsonschema import JsonSchemaValueException
 from rich import box
 from rich.console import Console
@@ -239,10 +239,9 @@ def schema_dump(
 
         pprint(f"[bright_red]╰─{'─' * rjust}─❯[/] {error_msg}")
     # check path for custom message from migration.json
-    with open(
-        resources.files("rovr.config") / "migration.json", "r", encoding="utf-8"
-    ) as f:
-        migration_docs = ujson.load(f)
+    migration_docs = json.loads(
+        resources.files("rovr.config").joinpath("migration.json").read_text("utf-8")
+    )
 
     for item in migration_docs:
         if any(fnmatch.fnmatch(path_str, path) for path in item["keys"]):
@@ -320,7 +319,7 @@ def load_config() -> tuple[dict, RovrConfig]:
 
     # check with schema
     content = resources.files("rovr.config").joinpath("schema.json").read_text("utf-8")
-    schema_dict = ujson.loads(content)
+    schema_dict = json.loads(content)
     schema: Callable[[dict], None] = fastjsonschema.compile(schema_dict)
 
     # ensure that template config works
@@ -410,7 +409,9 @@ def load_config() -> tuple[dict, RovrConfig]:
         # need to ignore in this case. because pdf2image asks for a
         # string or None, but if it is empty, it will take it as
         # a string, so kinda forced to do this
-        config["plugins"]["poppler"]["poppler_folder"] = pdfinfo_path  # ty: ignore[invalid-assignment]
+        config["plugins"]["poppler"]["poppler_folder"] = (
+            pdfinfo_path  # ty: ignore[invalid-assignment]
+        )
     return schema_dict, config
 
 
