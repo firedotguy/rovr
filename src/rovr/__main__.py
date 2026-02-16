@@ -1,3 +1,4 @@
+import logging
 import os
 import platform
 import sys
@@ -9,6 +10,9 @@ import rich_click as click
 from rich import box
 from rich.console import Console
 from rich.table import Table
+
+# need to shush textual-image
+logging.getLogger("textual_image._terminal").setLevel(logging.FATAL)
 
 pprint = Console().print
 
