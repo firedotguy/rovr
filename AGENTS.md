@@ -142,3 +142,8 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 - Use `uv` commands; do not use `pip` or `python -m`
 - Always run `poe check` before committing
 - There is no test suites. The author refuses to write tests and prefers to test manually.
+
+### Author preferences
+
+- Avoid `if TYPE_CHECKING` blocks for imports; it looks bad
+- Avoid adding unecessary comments, aim for self-documenting code instead
