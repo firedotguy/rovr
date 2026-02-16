@@ -13,15 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `cli`: add `--ignore-first-launch` 9640c0d4
 - `screens`: add a shell execution screen #217
 - `cli`: inclue commit hash for `--version` 88d094d
+- (dev): add `TypedDict` for config variable references d00c1c3 20c75fe
 
 ### Fixed
 - `firstlaunch`: allow single press quit when forced ae292a4
 - `tabs+filelist`: keep selections when switching tabs 9ace592
-- `app`: load the first paint faster c4f3a2c
+- `app`: load the first paint faster c4f3a2c 37b8fef
 
 ### Performance
 - `path_utils`: directly use `os.scandir` for iteration e19bd08
 - `pinned_sidebar`: await 0 seconds a3692c5
+
+### Removed
+- `deps`: remove ujson e0b3253
 
 ## [0.7.0] - 2026-01-31
 
