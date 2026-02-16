@@ -24,8 +24,8 @@ jobs:
           title: rovr docs build starting!
           color: 0xFFFF00
           description: |
-            Docs Build started due to ${{ github.event_name }}"
-            -# watch changes at https://github.com/NSPC911/rovr/actions/runs/${{ github.run_id }}
+            Docs Build started due to `${{ github.event_name }}` (acted by ${{ github.actor }})
+            -# watch changes at [NSPC911/rovr/actions](https://github.com/NSPC911/rovr/actions/runs/${{ github.run_id }})
           avatar_url: "https://avatars.githubusercontent.com/u/176916861?v=4"
           username: "NSPBot911"
           nodetail: true
@@ -69,7 +69,6 @@ jobs:
           description: |
             - Stable: https://nspc911.github.io/rovr
             - Dev: https://nspc911.github.io/rovr/dev
-            -# caused by ${{ github.actor }}
           avatar_url: "https://avatars.githubusercontent.com/u/176916861?v=4"
           username: "NSPBot911"
           nodetail: true

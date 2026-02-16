@@ -18,8 +18,8 @@ jobs:
           title: rovr nuitka builds starting!
           color: 0xFFFF00
           description: |
-            Nuitka Build started due to ${{ github.event_name }}
-            -# watch changes at https://github.com/NSPC911/rovr/actions/runs/${{ github.run_id }}
+            Nuitka Build started due to `${{ github.event_name }}` (acted by ${{ github.actor }})
+            -# watch changes at [NSPC911/rovr/actions](https://github.com/NSPC911/rovr/actions/runs/${{ github.run_id }})
           avatar_url: "https://avatars.githubusercontent.com/u/176916861?v=4"
           username: "NSPBot911"
           nodetail: true
@@ -122,7 +122,6 @@ jobs:
             - [linux-arm64](https://nightly.link/NSPC911/rovr/actions/runs/${{ github.run_id }}/rovr-linux-arm64-nuitka.zip)
             - [macos-arm64](https://nightly.link/NSPC911/rovr/actions/runs/${{ github.run_id }}/rovr-macos-arm64-nuitka.zip)
             - [macos-x64](https://nightly.link/NSPC911/rovr/actions/runs/${{ github.run_id }}/rovr-macos-x64-nuitka.zip)
-            -# caused by ${{ github.actor }}
           avatar_url: "https://avatars.githubusercontent.com/u/176916861?v=4"
           username: "NSPBot911"
           nodetail: true
