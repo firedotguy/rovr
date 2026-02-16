@@ -105,7 +105,7 @@ keybinds related to the alternate screens and popups in rovr.
             page += f"\n| {key} | {default_keys} | {vim_keys} | {sane_keys} | {values['display_name']} |"
     # handle subkeys now thanks
     with open(
-        "docs/src/content/docs/reference/keybindings.mdx", "w", encoding="utf-8"
+        "docs/src/content/docs/dev/reference/keybindings.mdx", "w", encoding="utf-8"
     ) as file:
         file.write(page)
     invoker = []
@@ -127,7 +127,7 @@ keybinds related to the alternate screens and popups in rovr.
             invoker
             + [
                 "--write",
-                "docs/src/content/docs/reference/keybindings.mdx",
+                "docs/src/content/docs/dev/reference/keybindings.mdx",
             ],
             check=True,
         )

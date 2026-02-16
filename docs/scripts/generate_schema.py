@@ -34,22 +34,21 @@ try:
         schema_content = f.read()
     with open("src/rovr/config/schema.json", "w", encoding="utf-8") as f:
         f.write(
-            schema_content
-            .replace("|", "&#124;")
+            schema_content.replace("|", "&#124;")
             .replace(">", "&gt;")
             .replace("<", "&lt;")
         )
     generate_from_filename(
         "src/rovr/config/schema.json",
-        "docs/src/content/docs/reference/schema.mdx",
+        "docs/src/content/docs/dev/reference/schema.mdx",
         config=config,
     )
     with open(
-        "docs/src/content/docs/reference/schema.mdx", "r", encoding="utf-8"
+        "docs/src/content/docs/dev/reference/schema.mdx", "r", encoding="utf-8"
     ) as schema_file:
         content = schema_file.read()
     with open(
-        "docs/src/content/docs/reference/schema.mdx", "w", encoding="utf-8"
+        "docs/src/content/docs/dev/reference/schema.mdx", "w", encoding="utf-8"
     ) as schema_file:
         schema_file.write(
             """---\ntitle: schema for humans\ndescription: config schema humanified\n---"""
@@ -74,7 +73,7 @@ try:
             invoker
             + [
                 "--write",
-                "docs/src/content/docs/reference/schema.mdx",
+                "docs/src/content/docs/dev/reference/schema.mdx",
             ],
         )
     except CalledProcessError:
