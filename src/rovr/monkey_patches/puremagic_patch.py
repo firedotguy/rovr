@@ -28,7 +28,8 @@ def _magic_data() -> tuple[
 ]:
     """Read the magic file"""  # noqa: DOC201
     data = json.loads(
-        resources.files("rovr.monkey_patches")
+        resources
+        .files("rovr.monkey_patches")
         .joinpath("magic_data.json")
         .read_text("utf-8")
     )
