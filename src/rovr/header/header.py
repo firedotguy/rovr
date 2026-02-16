@@ -13,7 +13,9 @@ from .tabs import NewTabButton, Tabline, TablineTab
 
 
 class HeaderArea(HorizontalGroup):
-    tabline = Tabline(TablineTab(directory=getcwd()))
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.tabline = Tabline(TablineTab(directory=getcwd()))
 
     def compose(self) -> ComposeResult:
         if (
