@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Performance
 - `path_utils`: directly use `os.scandir` for iteration e19bd08
 - `pinned_sidebar`: await 0 seconds a3692c5
+- `preview`: use a custom pdf preview implementation #221
 
 ### Removed
 - `deps`: remove ujson e0b3253
