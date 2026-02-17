@@ -265,7 +265,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `style`: fix image and option padding/styling
 
 [Unreleased]: https://github.com/NSPC911/rovr/compare/v0.8.0.dev1...HEAD
-[0.8.0.dev1]: https://github.com/NSPC911/rovr/compare/v0.8.0.dev1...v0.7.0
+[0.8.0.dev1]: https://github.com/NSPC911/rovr/compare/v0.7.0...v0.8.0.dev1
 [0.7.0]: https://github.com/NSPC911/rovr/compare/v0.7.0.dev3...v0.7.0
 [0.7.0.dev3]: https://github.com/NSPC911/rovr/compare/v0.7.0.dev2...v0.7.0.dev3
 [0.7.0.dev2]: https://github.com/NSPC911/rovr/compare/v0.7.0.dev1...v0.7.0.dev2
