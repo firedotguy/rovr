@@ -139,50 +139,55 @@ class MetadataContainer(VerticalScroll, inherit_bindings=False):
 
         values_list = []
         for field in config["metadata"]["fields"]:
-            match field:
-                case "type":
-                    values_list.append(Static(type_str))
-                case "permissions":
-                    values_list.append(Static(file_info))
-                case "hidden":
-                    values_list.append(Static("Yes" if is_hidden else "No"))
-                case "size":
-                    values_list.append(
-                        Static(
-                            utils.natural_size(
-                                file_stat.st_size,
-                                config["metadata"]["filesize_suffix"],
-                                config["metadata"]["filesize_decimals"],
-                            )
-                            if type_str == "File"
-                            else "--",
-                            id="metadata-size",
-                        )
-                    )
-                case "modified":
-                    values_list.append(
-                        Static(
-                            datetime.fromtimestamp(file_stat.st_mtime).strftime(
-                                config["metadata"]["datetime_format"]
+            try:
+                match field:
+                    case "type":
+                        values_list.append(Static(type_str))
+                    case "permissions":
+                        values_list.append(Static(file_info))
+                    case "hidden":
+                        values_list.append(Static("Yes" if is_hidden else "No"))
+                    case "size":
+                        values_list.append(
+                            Static(
+                                utils.natural_size(
+                                    file_stat.st_size,
+                                    config["metadata"]["filesize_suffix"],
+                                    config["metadata"]["filesize_decimals"],
+                                )
+                                if type_str == "File"
+                                else "--",
+                                id="metadata-size",
                             )
                         )
-                    )
-                case "accessed":
-                    values_list.append(
-                        Static(
-                            datetime.fromtimestamp(file_stat.st_atime).strftime(
-                                config["metadata"]["datetime_format"]
+                    case "modified":
+                        values_list.append(
+                            Static(
+                                datetime.fromtimestamp(file_stat.st_mtime).strftime(
+                                    config["metadata"]["datetime_format"]
+                                )
                             )
                         )
-                    )
-                case "created":
-                    values_list.append(
-                        Static(
-                            datetime.fromtimestamp(file_stat.st_ctime).strftime(
-                                config["metadata"]["datetime_format"]
+                    case "accessed":
+                        values_list.append(
+                            Static(
+                                datetime.fromtimestamp(file_stat.st_atime).strftime(
+                                    config["metadata"]["datetime_format"]
+                                )
                             )
                         )
-                    )
+                    case "created":
+                        values_list.append(
+                            Static(
+                                datetime.fromtimestamp(file_stat.st_ctime).strftime(
+                                    config["metadata"]["datetime_format"]
+                                )
+                            )
+                        )
+            except OSError as exc:
+                # can appear here because of stupid nt epoch stuff
+                if exc.errno in (22, 23, 123):
+                    values_list.append(Static("Invalid date"))
         values = VerticalGroup(*values_list, id="metadata-values")
 
         try:
