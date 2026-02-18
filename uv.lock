@@ -1167,7 +1167,7 @@ dev = [
 docscripts = [
     { name = "json-schema-for-humans", specifier = ">=1.5.1" },
     { name = "jsonschema-gentypes", specifier = ">=2.13.0" },
-    { name = "poethepoet", specifier = ">=0.38.0" },
+    { name = "poethepoet", specifier = ">=0.41.0" },
 ]
 
 [[package]]
