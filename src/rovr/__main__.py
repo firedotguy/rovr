@@ -298,9 +298,10 @@ example_function(10)"""
             table.add_column("type")
             table.add_column("path")
             table.add_row("[cyan]custom config[/]", f"{config_path}/config.toml")
-            table.add_row("[yellow]pinned folders[/]", f"{config_path}/pins.json")
             table.add_row("[hot_pink]custom styles[/]", f"{config_path}/style.tcss")
+            table.add_row("[yellow]pinned folders[/]", f"{config_path}/pins.json")
             table.add_row("[grey69]persistent state[/]", f"{config_path}/state.toml")
+            table.add_row("[red]logs[/]", f"{config_path}/logs/")
             pprint(table)
         else:
             # print as json for user to parse (jq, nu, pwsh, idk)
@@ -308,7 +309,8 @@ example_function(10)"""
     "custom_config": "{config_path}/config.toml",
     "pinned_folders": "{config_path}/pins.json",
     "custom_styles": "{config_path}/style.tcss",
-    "persistent_state": "{config_path}/state.toml"
+    "persistent_state": "{config_path}/state.toml",
+    "logs": "{config_path}/logs/"
 \u007d""")
         return
     elif show_version:
