@@ -276,6 +276,27 @@ def schema_dump(
             to_print.add_column()
             to_print.add_row(message)
             to_print.add_row(f"[dim]> {item['extra']}[/]")
+            if "regex" in item and doc_path != path.join(
+                path.dirname(__file__), "../config/config.toml"
+            ):
+                # bird migration
+                import re
+
+                fixed_content = config_content
+                for rule in item["regex"]:
+                    fixed_content = re.sub(
+                        re.escape(rule["find"]), rule["replace"], fixed_content
+                    )
+                if fixed_content != config_content:
+                    with open(doc_path, "w", encoding="utf-8") as _f:
+                        _f.write(fixed_content)
+                    to_print.add_row(
+                        "[bright_green]Auto-fix applied! Please re-run rovr.[/]"
+                    )
+                else:
+                    to_print.add_row(
+                        "[bright_yellow]I couldn't fix it for you. Please update your config manually.[/]"
+                    )
             pprint(Padding(to_print, (0, rjust + 4, 0, rjust + 3)))
             break
 
@@ -429,7 +450,9 @@ def load_config() -> tuple[dict, RovrConfig]:
         # need to ignore in this case. poppler_folder is typed as str
         # in the config schema, but pdfinfo_path can be None when
         # resolved from PATH, so we suppress the type error
-        config["plugins"]["poppler"]["poppler_folder"] = pdfinfo_path  # ty: ignore[invalid-assignment]
+        config["plugins"]["poppler"]["poppler_folder"] = (
+            pdfinfo_path  # ty: ignore[invalid-assignment]
+        )
     return schema_dict, config
 
 

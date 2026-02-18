@@ -59,7 +59,10 @@
     "message": [
       "[bright_blue]plugins.file_one.mime_rules.*[/] has been renamed to [bright_cyan]interface.mime_rules.*[/] because file(1) is no longer a requirement to make use of mime types."
     ],
-    "extra": "Moved in v0.7.0"
+    "extra": "Moved in v0.7.0",
+    "regex": [
+      { "find": "plugins.file_one.mime_rules", "replace": "interface.mime_rules" }
+    ]
   },
   {
     "keys": [
