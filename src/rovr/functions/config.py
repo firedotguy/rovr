@@ -184,6 +184,26 @@ def schema_dump(
 
     doc: list = config_content.splitlines()
 
+    # minor fix for additionalProperties
+    if exception.rule == "additionalProperties":
+        # the current message is like `<name> must not contain {<value>, <value>, ...} properties.`
+        # but i want one of them only, so i have to regex it out
+        # so that i can get `<value> is not allowed in <name>` or something like that
+        import re
+
+        match = re.search(r"\{([^}]+)\}", exception.message)
+        if match:
+            # Get the first value from the comma-separated list
+            values = [v.strip() for v in match.group(1).split(",")]
+            if values:
+                prop = values[0]
+                name_match = re.match(r"^(.+) must not contain", exception.message)
+                name = name_match.group(1) if name_match else "<unknown>"
+                new_message = f"{prop} is not allowed in '{name}'"
+                exception.message = new_message
+                if exception.name is not None:
+                    exception.name += f".{prop.strip("'")}"
+
     # find the line no for the error path
     # exception.path is just exception.name but as a property
     path_str = ".".join(str(p) for p in exception.path) if exception.path else "root"
@@ -409,7 +429,9 @@ def load_config() -> tuple[dict, RovrConfig]:
         # need to ignore in this case. poppler_folder is typed as str
         # in the config schema, but pdfinfo_path can be None when
         # resolved from PATH, so we suppress the type error
-        config["plugins"]["poppler"]["poppler_folder"] = pdfinfo_path  # ty: ignore[invalid-assignment]
+        config["plugins"]["poppler"]["poppler_folder"] = (
+            pdfinfo_path  # ty: ignore[invalid-assignment]
+        )
     return schema_dict, config
 
 
