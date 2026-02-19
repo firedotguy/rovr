@@ -505,7 +505,7 @@ def ensure_existing_directory(directory: str) -> str:
     return directory
 
 
-def _should_include_macos_mount_point(partition: psutil._common.sdiskpart) -> bool:
+def _should_include_macos_mount_point(partition: "psutil._common.sdiskpart") -> bool:
     """
     Determine if a macOS mount point should be included in the drive list.
 
@@ -531,7 +531,7 @@ def _should_include_macos_mount_point(partition: psutil._common.sdiskpart) -> bo
     return not partition.mountpoint.startswith(("/System/", "/dev", "/private"))
 
 
-def _should_include_linux_mount_point(partition: psutil._common.sdiskpart) -> bool:
+def _should_include_linux_mount_point(partition: "psutil._common.sdiskpart") -> bool:
     """
     Determine if a Linux/WSL mount point should be included in the drive list.
 
