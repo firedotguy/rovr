@@ -6,7 +6,7 @@ from textual.widgets.option_list import Option
 
 from rovr.classes.textual_options import FileListSelectionWidget
 from rovr.functions import icons as icons_utils
-from rovr.variables.constants import vindings
+from rovr.variables.constants import bindings
 
 
 class PaddedOption(Option):
@@ -44,4 +44,4 @@ class DoubleClickableOptionList(OptionList):
 
 
 class SpecialOptionList(OptionList):
-    BINDINGS = list(vindings)
+    BINDINGS = list(bindings)

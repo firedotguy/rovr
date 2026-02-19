@@ -7,7 +7,7 @@ from textual.content import Content
 from textual.widgets import Button
 from textual.worker import Worker, WorkerError
 
-from rovr.classes.textual_validators import IsValidFilePath, PathDoesntExist
+from rovr.classes.textual_validators import IsValidFilePath, PathNoLongerExists
 from rovr.functions.icons import get_icon
 from rovr.functions.path import dump_exc, normalise
 from rovr.screens import ModalInput
@@ -33,7 +33,7 @@ class NewItemButton(Button):
                 border_title="Create New Item",
                 border_subtitle="End with a slash (/) to create a directory",
                 is_path=True,
-                validators=[PathDoesntExist(), IsValidFilePath()],
+                validators=[PathNoLongerExists(), IsValidFilePath()],
             ),
             wait_for_dismiss=True,
         )

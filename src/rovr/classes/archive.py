@@ -246,7 +246,7 @@ class Archive:
 
         elif ":bz2" in tar_mode:
             if not (1 <= self.compression_level <= 9):
-                raise ValueError("Bzip2 compression level must be between 1-9")
+                raise ValueError("bzip2 compression level must be between 1-9")
             self._compress_file_obj = bzip2.open(  # noqa: SIM115
                 self.filename, self.mode + "b", compresslevel=self.compression_level
             )
@@ -254,14 +254,14 @@ class Archive:
 
         elif ":xz" in tar_mode:
             if not (0 <= self.compression_level <= 9):
-                raise ValueError("XZ compression level must be between 0-9")
+                raise ValueError("xz compression level must be between 0-9")
             xz_file = lzma.open(  # noqa: SIM115
                 self.filename, self.mode + "b", preset=self.compression_level
             )
             return tarfile.open(fileobj=xz_file, mode="w")
         elif ":zst" in tar_mode:
             if not (1 <= self.compression_level <= 22):
-                raise ValueError("Zstandard compression level must be between 1-22")
+                raise ValueError("zstd compression level must be between 1-22")
             return tarfile.open(self.filename, tar_mode, level=self.compression_level)
         else:
             return tarfile.open(self.filename, mode="w")

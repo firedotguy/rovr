@@ -13,12 +13,12 @@ from textual.worker import WorkerState
 
 from rovr.functions import utils
 from rovr.functions.path import get_direntry_for, is_hidden_file
-from rovr.variables.constants import config, scroll_vindings
+from rovr.variables.constants import config, scroll_bindings
 from rovr.variables.maps import SPINNER, SPINNER_LENGTH
 
 
 class MetadataContainer(VerticalScroll, inherit_bindings=False):
-    BINDINGS = scroll_vindings
+    BINDINGS = scroll_bindings
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

@@ -25,7 +25,7 @@ class StateDict(TypedDict):
     pinned_sidebar_visible: bool
     preview_sidebar_visible: bool
     footer_visible: bool
-    menuwrapper_visible: bool
+    menu_wrapper_visible: bool
     sort_by: SortByOptions
     sort_descending: bool
 
@@ -40,7 +40,7 @@ class StateManager(Widget):
     pinned_sidebar_visible: reactive[bool] = reactive(True, init=False)
     preview_sidebar_visible: reactive[bool] = reactive(True, init=False)
     footer_visible: reactive[bool] = reactive(True, init=False)
-    menuwrapper_visible: reactive[bool] = reactive(True, init=False)
+    menu_wrapper_visible: reactive[bool] = reactive(True, init=False)
     sort_by: reactive[SortByOptions] = reactive("name", init=False)
     sort_descending: reactive[bool] = reactive(False, init=False)
     custom_sort_enabled: reactive[bool] = reactive(False, init=False)
@@ -57,7 +57,7 @@ class StateManager(Widget):
         self._load_state()
         self._skip_save = False
         self._locked_by: Literal[
-            "PinnedSidebar", "PreviewSidebar", "Footer", "menuwrapper", None
+            "PinnedSidebar", "PreviewSidebar", "Footer", "menu_wrapper", None
         ] = None
 
     def _load_state(self) -> None:
@@ -91,12 +91,12 @@ class StateManager(Widget):
                         footer_visible := loaded_state.get("footer_visible", True)
                     ):
                         self.footer_visible = footer_visible
-                    if self.menuwrapper_visible != (
-                        menuwrapper_visible := loaded_state.get(
-                            "menuwrapper_visible", True
+                    if self.menu_wrapper_visible != (
+                        menu_wrapper_visible := loaded_state.get(
+                            "menu_wrapper_visible", True
                         )
                     ):
-                        self.menuwrapper_visible = menuwrapper_visible
+                        self.menu_wrapper_visible = menu_wrapper_visible
                     sort_by = loaded_state.get("sort_by", "name")
                     if sort_by not in [
                         "name",
@@ -124,7 +124,7 @@ class StateManager(Widget):
         self.pinned_sidebar_visible = True
         self.preview_sidebar_visible = True
         self.footer_visible = True
-        self.menuwrapper_visible = True
+        self.menu_wrapper_visible = True
         self.sort_by = "name"
         self.sort_descending = False
         self._save_state(force=True)
@@ -139,7 +139,7 @@ class StateManager(Widget):
 pinned_sidebar_visible = {str(self.pinned_sidebar_visible).lower()}
 preview_sidebar_visible = {str(self.preview_sidebar_visible).lower()}
 footer_visible = {str(self.footer_visible).lower()}
-menuwrapper_visible = {str(self.menuwrapper_visible).lower()}
+menu_wrapper_visible = {str(self.menu_wrapper_visible).lower()}
 sort_by = "{self.sort_by}"
 sort_descending = {str(self.sort_descending).lower()}
 """)
@@ -188,17 +188,17 @@ sort_descending = {str(self.sort_descending).lower()}
         if self._locked_by == "Footer":
             self._save_state()
 
-    def watch_menuwrapper_visible(self, visible: bool) -> None:
+    def watch_menu_wrapper_visible(self, visible: bool) -> None:
         if self._is_loading:
             return
-        self._locked_by = "menuwrapper"
+        self._locked_by = "menu_wrapper"
         with suppress(NoMatches):
-            menuwrapper = self.app.query_one("#menuwrapper")
+            menu_wrapper = self.app.query_one("#menu_wrapper")
             if visible:
-                menuwrapper.remove_class("hide")
+                menu_wrapper.remove_class("hide")
             else:
-                menuwrapper.add_class("hide")
-        if self._locked_by == "menuwrapper":
+                menu_wrapper.add_class("hide")
+        if self._locked_by == "menu_wrapper":
             self._save_state()
 
     def watch_sort_by(self, value: SortByOptions) -> None:
@@ -234,8 +234,8 @@ sort_descending = {str(self.sort_descending).lower()}
     def toggle_footer(self) -> None:
         self.footer_visible = not self.footer_visible
 
-    def toggle_menuwrapper(self) -> None:
-        self.menuwrapper_visible = not self.menuwrapper_visible
+    def toggle_menu_wrapper(self) -> None:
+        self.menu_wrapper_visible = not self.menu_wrapper_visible
 
     @work(thread=True)
     def restore_state(self) -> None:
@@ -245,7 +245,7 @@ sort_descending = {str(self.sort_descending).lower()}
         self.watch_pinned_sidebar_visible(self.pinned_sidebar_visible)
         self.watch_preview_sidebar_visible(self.preview_sidebar_visible)
         self.watch_footer_visible(self.footer_visible)
-        self.watch_menuwrapper_visible(self.menuwrapper_visible)
+        self.watch_menu_wrapper_visible(self.menu_wrapper_visible)
         self.watch_sort_by(self.sort_by)
         self.watch_sort_descending(self.sort_descending)
         self._skip_save = False

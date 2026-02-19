@@ -742,7 +742,7 @@ class _RovrConfigKeybinds(TypedDict, total=False):
     toggle_pinned_sidebar: list[str]
     toggle_preview_sidebar: list[str]
     toggle_footer: list[str]
-    toggle_menuwrapper: list[str]
+    toggle_menu_wrapper: list[str]
     focus_toggle_pinned_sidebar: list[str]
     focus_file_list: list[str]
     focus_toggle_preview_sidebar: list[str]

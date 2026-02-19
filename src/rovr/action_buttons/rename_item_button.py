@@ -8,7 +8,7 @@ from textual import work
 from textual.widgets import Button
 from textual.worker import Worker, WorkerError
 
-from rovr.classes.textual_validators import IsValidFilePath, PathDoesntExist
+from rovr.classes.textual_validators import IsValidFilePath, PathNoLongerExists
 from rovr.functions.icons import get_icon
 from rovr.functions.path import dump_exc, normalise
 from rovr.functions.utils import run_editor_command
@@ -54,7 +54,7 @@ class RenameItemButton(Button):
                     initial_value=path.basename(selected_file),
                     validators=[
                         IsValidFilePath(),
-                        PathDoesntExist(accept=[path.basename(selected_file)]),
+                        PathNoLongerExists(accept=[path.basename(selected_file)]),
                     ],
                     is_path=True,
                     is_folder=type_of_file == "Folder",
@@ -106,12 +106,12 @@ class RenameItemButton(Button):
                     if show_as_mapping
                     else 0
                 )
-                for selecteditem in selected_files:
-                    selecteditem = path.basename(selecteditem)
+                for selectedItem in selected_files:
+                    selectedItem = path.basename(selectedItem)
                     if show_as_mapping:
-                        temp.write(f"{selecteditem:<{max_len}}  ➔  {selecteditem}\n")
+                        temp.write(f"{selectedItem:<{max_len}}  ➔  {selectedItem}\n")
                     else:
-                        temp.write(f"{selecteditem}\n")
+                        temp.write(f"{selectedItem}\n")
                 temp.flush()
                 temp.close()
 

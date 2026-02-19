@@ -87,7 +87,7 @@ class MaxPossible:
         return 26 if config["interface"]["use_reactive_layout"] else 70
 
 
-scroll_vindings: list[BindingType] = (
+scroll_bindings: list[BindingType] = (
     [
         Binding(bind, "scroll_down", "Scroll Down", show=False)
         for bind in config["keybinds"]["down"]
@@ -116,7 +116,7 @@ scroll_vindings: list[BindingType] = (
     ]
 )
 
-vindings: list[BindingType] = (
+bindings: list[BindingType] = (
     [
         Binding(bind, "cursor_down", "Down", show=False)
         for bind in config["keybinds"]["down"]

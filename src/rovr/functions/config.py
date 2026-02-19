@@ -404,17 +404,13 @@ def load_config() -> tuple[dict, RovrConfig]:
     default_editor = ""  # screw anyone that wants to do this to me
     # editor empty or $EDITOR: expand to actual editor command
     editors = [
-        # helix
         "hx",
-        # neovim
         "nvim",
-        # vim
         "vim",
-        # vi
         "vi",
-        # theoretically shouldnt come this far
+        # theoretically shouldn't come this far
         "nano",
-        # should exist in windows ever since msedit was added
+        # should exist in windows ever since ms-edit was added
         # like last year or something
         "edit",
         "msedit",
@@ -426,7 +422,7 @@ def load_config() -> tuple[dict, RovrConfig]:
             found_reasonable_cli_editor = True
             break
     if not found_reasonable_cli_editor and which("code"):
-        # vscode
+        # VSCode
         default_editor = "code --wait --"
     for key in ["file", "folder", "bulk_rename"]:
         key = cast(Literal["file", "folder", "bulk_rename"], key)
@@ -450,7 +446,9 @@ def load_config() -> tuple[dict, RovrConfig]:
         # need to ignore in this case. poppler_folder is typed as str
         # in the config schema, but pdfinfo_path can be None when
         # resolved from PATH, so we suppress the type error
-        config["plugins"]["poppler"]["poppler_folder"] = pdfinfo_path  # ty: ignore[invalid-assignment]
+        config["plugins"]["poppler"]["poppler_folder"] = (
+            pdfinfo_path  # ty: ignore[invalid-assignment]
+        )
     return schema_dict, config
 
 

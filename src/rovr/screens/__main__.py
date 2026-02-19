@@ -16,7 +16,7 @@ from rovr.screens import (
     ArchiveCreationScreen,
     CommonFileNameDoWhat,
     DeleteFiles,
-    Dismissable,
+    Dismissible,
     FileInUse,
     PasteScreen,
     YesOrNo,
@@ -31,14 +31,14 @@ class Test(App):
     CSS_PATH = "../style.tcss"
 
     HORIZONTAL_BREAKPOINTS = [
-        (0, "-filelistonly"),
-        (35, "-nopreview"),
+        (0, "-filelist-only"),
+        (35, "-no-preview"),
         (70, "-all-horizontal"),
     ]
     VERTICAL_BREAKPOINTS = [
         (0, "-middle-only"),
-        (16, "-nomenu-atall"),
-        (19, "-nopath"),
+        (16, "-no-menu-at-all"),
+        (19, "-no-path"),
         (24, "-all-vertical"),
     ]
 
@@ -48,7 +48,7 @@ class Test(App):
     def compose(self) -> ComposeResult:
         yield Button("Common File Name Do What", id="CommonFileNameDoWhat")
         yield Button("Delete Files", id="DeleteFiles")
-        yield Button("Dismissable", id="Dismissable")
+        yield Button("Dismissible", id="Dismissible")
         yield Button("File In Use", id="FileInUse")
         yield Button("Paste Screen", id="PasteScreen")
         yield Button("Yes Or No", id="YesOrNo")
@@ -75,10 +75,10 @@ class Test(App):
             callback=lambda result: self.notify(str(result)),
         )
 
-    @on(Button.Pressed, "#Dismissable")
+    @on(Button.Pressed, "#Dismissible")
     def dismissable(self) -> None:
         self.push_screen(
-            Dismissable("This is a dismissable screen. Press any key to dismiss."),
+            Dismissible("This is a dismissable screen. Press any key to dismiss."),
             callback=lambda result: self.notify(str(result)),
         )
 

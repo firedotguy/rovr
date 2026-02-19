@@ -13,12 +13,12 @@ from rovr.classes.textual_options import PinnedSidebarOption
 from rovr.functions import icons as icon_utils
 from rovr.functions import path as path_utils
 from rovr.functions import pins as pin_utils
-from rovr.variables.constants import config, vindings
+from rovr.variables.constants import bindings, config
 
 
 class PinnedSidebar(OptionList, inherit_bindings=False):
     # Just so that I can disable space
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -131,7 +131,7 @@ class PinnedSidebar(OptionList, inherit_bindings=False):
             await drive_worker.wait()
         except WorkerCancelled:
             # keep in mind, i dont exactly know why this is happening
-            # either theres a race condition somewhere, or textual is
+            # either there's a race condition somewhere, or textual is
             # cancelling it for some reason.
             # path_utils.dump_exc(self, exc)
             # retry again

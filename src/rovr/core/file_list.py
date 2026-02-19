@@ -23,9 +23,9 @@ from rovr.functions import utils
 from rovr.navigation_widgets import PathInput
 from rovr.state_manager import StateManager
 from rovr.variables.constants import (
+    bindings,
     buttons_that_depend_on_path,
     config,
-    vindings,
 )
 
 
@@ -34,7 +34,7 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
     OptionList but can multi-select files and folders.
     """
 
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(
         self,

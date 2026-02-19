@@ -28,19 +28,19 @@ $scrollbar-background-active: $primary-muted;
 $scrollbar-corner-color: $primary-muted;
 
 Screen.-all-horizontal.compact-buttons {
-  #menuwrapper #below_menu #path_switcher {
+  #menu_wrapper #below_menu #path_switcher {
     border-left: $border-style $border-blurred
   }
-  #menuwrapper:focus-within #below_menu #path_switcher {
+  #menu_wrapper:focus-within #below_menu #path_switcher {
     border-left: $border-style $border
   }
-  #menuwrapper:focus-within #below_menu #path_switcher.hide_border_bottom {
+  #menu_wrapper:focus-within #below_menu #path_switcher.hide_border_bottom {
     border-left: $border-style $accent
   }
 }
 
 /* border styling for main widgets */
-#menuwrapper,
+#menu_wrapper,
 #pinned_sidebar_container,
 #file_list_container,
 #preview_sidebar,
@@ -77,7 +77,7 @@ ArchiveCreationScreen OptionList {
   }
 }
 
-#menuwrapper:focus-within,
+#menu_wrapper:focus-within,
 #pinned_sidebar_container:focus-within,
 #file_list_container:focus-within,
 #preview_sidebar:focus-within,
@@ -262,7 +262,7 @@ Tooltip {
   }
 }
 
-#menuwrapper {
+#menu_wrapper {
   #below_menu { border-top: $border-style $border-blurred }
   &:focus-within #below_menu { border-top: $border-style $border }
 }
@@ -654,7 +654,7 @@ Keybinds {
 }
 
 /* Modal Dialog Shared Styles */
-Dismissable,
+Dismissible,
 YesOrNo,
 CommonFileNameDoWhat,
 FileInUse,
@@ -700,7 +700,7 @@ YesOrNo #dialog Button,
 CommonFileNameDoWhat #dialog Button,
 FileInUse Button { width: 100% }
 
-Dismissable {
+Dismissible {
   #dialog {
     grid-size: 1;
     grid-gutter: 1 2;
@@ -991,24 +991,24 @@ LoadingIndicator {
     max-width: 3;
   }
 }
-App.comfy-buttons Screen.-nopreview #below_menu PathAutoCompleteInput,
-App.comfy-buttons Screen.-filelistonly #below_menu PathAutoCompleteInput {
+App.comfy-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
+App.comfy-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
   margin: -1 1 0 1
 }
-App.compact-buttons Screen.-nopreview #below_menu PathAutoCompleteInput,
-App.compact-buttons Screen.-filelistonly #below_menu PathAutoCompleteInput {
+App.compact-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
+App.compact-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
   margin: -1 -1 0 -1
 }
-Screen.-filelistonly,
-Screen.-nopreview {
+Screen.-filelist-only,
+Screen.-no-preview {
   #preview_sidebar,
   #below_menu Button { display: none !important }
 }
-Screen.-nomenu-atall #menuwrapper,
-Screen.-middle-only #menuwrapper { display: none }
+Screen.-no-menu-at-all #menu_wrapper,
+Screen.-middle-only #menu_wrapper { display: none }
 
 Screen {
-  &.-filelistonly {
+  &.-filelist-only {
     #pinned_sidebar_container { display: none !important }
     #zoxide_group,
     #file_search_group,
@@ -1037,7 +1037,7 @@ Screen {
       #cancel { width: 100% }
     }
   }
-  &.-nopreview {
+  &.-no-preview {
     #pinned_sidebar_container { max-width: 25vw }
     #zoxide_group,
     #file_search_group,
@@ -1071,16 +1071,16 @@ Screen {
     #footer { max-height: 25vh }
     #dialog.file_in_use #cancel { width: 50% }
   }
-  &.-nopath {
+  &.-no-path {
     #below_menu { display: none !important }
     #footer { max-height: 30vh }
     #zoxide_group, #file_search_group, #content_search_group { max-height: 75vh }
   }
-  &.-nomenu-atall {
+  &.-no-menu-at-all {
     #footer { max-height: 30vh }
     #zoxide_group, #file_search_group, #content_search_group { max-height: 100vh }
   }
-  &.-filelistonly-vertical #menu { display: none !important }
+  &.-filelist-only-vertical #menu { display: none !important }
   &.-middle-only {
     #footer { max-height: 25vh }
     #zoxide_group, #file_search_group, #content_search_group { max-height: 100vh !important }

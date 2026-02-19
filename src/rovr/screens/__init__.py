@@ -1,7 +1,7 @@
 from .archive_creator import ArchiveCreationScreen
 from .common_file_name_do_what import CommonFileNameDoWhat
 from .delete_files import DeleteFiles
-from .dismissable import Dismissable
+from .dismissable import Dismissible
 from .fd_search import FileSearch
 from .file_in_use import FileInUse
 from .input import ModalInput
@@ -18,7 +18,7 @@ __all__ = [
     "CommonFileNameDoWhat",
     "ContentSearch",
     "DeleteFiles",
-    "Dismissable",
+    "Dismissible",
     "FileInUse",
     "FileSearch",
     "Keybinds",

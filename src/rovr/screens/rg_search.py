@@ -18,11 +18,11 @@ from rovr.components import DoubleClickableOptionList, ModalSearchScreen
 from rovr.functions import icons as icon_utils
 from rovr.functions import path as path_utils
 from rovr.functions.icons import get_icon_for_file, get_icon_for_folder
-from rovr.variables.constants import config, vindings
+from rovr.variables.constants import bindings, config
 
 
 class ContentSearchToggles(CheckboxRenderingMixin, SelectionList):
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self) -> None:
         super().__init__(

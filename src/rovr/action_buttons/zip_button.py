@@ -6,7 +6,7 @@ from textual.widgets import Button
 
 from rovr.classes.textual_validators import (
     IsValidFilePath,
-    PathDoesntExist,
+    PathNoLongerExists,
 )
 from rovr.functions.icons import get_icon
 from rovr.functions.path import normalise
@@ -49,7 +49,7 @@ class ZipButton(Button):
                 ArchiveCreationScreen(
                     initial_value=default_zip_name,
                     validators=[
-                        PathDoesntExist(strict=False),
+                        PathNoLongerExists(strict=False),
                         IsValidFilePath(),
                     ],
                     is_path=True,

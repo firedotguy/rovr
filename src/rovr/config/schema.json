@@ -522,7 +522,7 @@
           "description": "Toggle viewing the footer.",
           "display_name": "Toggle footer"
         },
-        "toggle_menuwrapper": {
+        "toggle_menu_wrapper": {
           "$ref": "#/definitions/keybind",
           "description": "Toggle viewing the menu wrapper.",
           "display_name": "Toggle menu wrapper"

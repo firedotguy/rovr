@@ -13,13 +13,13 @@ from rovr.classes.mixins import CheckboxRenderingMixin
 from rovr.classes.textual_options import ClipboardSelection, ClipboardSelectionValue
 from rovr.functions import icons as icon_utils
 from rovr.functions.path import dump_exc
-from rovr.variables.constants import config, vindings
+from rovr.variables.constants import bindings, config
 
 
 class Clipboard(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
     """A selection list that displays the clipboard contents."""
 
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -163,7 +163,9 @@ class Clipboard(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
                     self.select_all()
                 event.stop()
 
-    def _remove_option(self, option: ClipboardSelection) -> Self:  # ty: ignore[invalid-method-override]  # oh my god, will you please stfu
+    def _remove_option(
+        self, option: ClipboardSelection
+    ) -> Self:  # ty: ignore[invalid-method-override]  # oh my god, will you please stfu
         super()._remove_option(option)
         self.app.file_list.update_dimmed_items([
             opt.value.path

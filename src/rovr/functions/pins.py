@@ -32,14 +32,14 @@ def load_pins() -> PinsDict:
     # pins isn't set global, I can't be bothered for now
     # until an issue gets raised in the future
     global pins
-    tempins: PinsDict
+    _pins: PinsDict
     user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
 
     # Ensure the user's config directory exists
     if not path.exists(VAR_TO_DIR["CONFIG"]):
         os.makedirs(VAR_TO_DIR["CONFIG"])
     if not path.exists(user_pins_file_path):
-        tempins = {
+        _pins = {
             "default": [
                 {"name": "Home", "path": "$HOME"},
                 {"name": "Downloads", "path": "$DOWNLOADS"},
@@ -53,7 +53,7 @@ def load_pins() -> PinsDict:
         }
         try:
             with open(user_pins_file_path, "w") as f:
-                json.dump(tempins, f, indent=2)
+                json.dump(_pins, f, indent=2)
         except IOError as exc:
             dump_exc(None, exc)
 
@@ -62,10 +62,10 @@ def load_pins() -> PinsDict:
             loaded = json.load(f)
         if not isinstance(loaded, dict):
             raise ValueError()
-        tempins = cast(PinsDict, loaded)
+        _pins = cast(PinsDict, loaded)
     except (IOError, ValueError, json.JSONDecodeError):
         # Reset pins on corrupt or something else happened
-        tempins = {
+        _pins = {
             "default": [
                 {"name": "Home", "path": "$HOME"},
                 {"name": "Downloads", "path": "$DOWNLOADS"},
@@ -79,8 +79,8 @@ def load_pins() -> PinsDict:
         }
 
     # If list died
-    if "default" not in tempins or not isinstance(tempins["default"], list):
-        tempins["default"] = [
+    if "default" not in _pins or not isinstance(_pins["default"], list):
+        _pins["default"] = [
             {"name": "Home", "path": "$HOME"},
             {"name": "Downloads", "path": "$DOWNLOADS"},
             {"name": "Documents", "path": "$DOCUMENTS"},
@@ -89,13 +89,13 @@ def load_pins() -> PinsDict:
             {"name": "Videos", "path": "$VIDEOS"},
             {"name": "Music", "path": "$MUSIC"},
         ]
-    if "pins" not in tempins or not isinstance(tempins["pins"], list):
-        tempins["pins"] = []
+    if "pins" not in _pins or not isinstance(_pins["pins"], list):
+        _pins["pins"] = []
 
     for section_key in ["default", "pins"]:
         # again, screw you ty, `section_key` can never be unknown
         # but i dont know how to assert that to you
-        for item in tempins[section_key]:  # ty: ignore[invalid-key]
+        for item in _pins[section_key]:  # ty: ignore[invalid-key]
             # no i will not use isinstance, ty screams at me
             # because of the replace code a few lines below
             if type(item) is dict and "path" in item and type(item["path"]) is str:
@@ -104,8 +104,8 @@ def load_pins() -> PinsDict:
                     item["path"] = item["path"].replace(f"${var}", dir_path_val)
                 # Normalize to forward slashes
                 item["path"] = normalise(item["path"])
-    pins = tempins
-    return tempins
+    pins = _pins
+    return _pins
 
 
 def add_pin(pin_name: str, pin_path: str | bytes) -> None:

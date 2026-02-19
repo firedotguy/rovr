@@ -1,8 +1,19 @@
 [
   {
-    "keys": [
-      "keybinds.copy_path"
+    "keys": ["keybinds.toggle_menuwrapper"],
+    "message": [
+      "The [bright_cyan]keybinds.toggle_menuwrapper[/] keybind has been renamed to [bright_blue]keybinds.toggle_menu_wrapper[/] to be more consistent with the naming scheme."
     ],
+    "extra": "Renamed in v0.7.0",
+    "regex": [
+      {
+        "find": "toggle_menuwrapper",
+        "replace": "toggle_menu_wrapper"
+      }
+    ]
+  },
+  {
+    "keys": ["keybinds.copy_path"],
     "message": [
       "The copy path button has been combined with the copy button. You now press [bright_cyan]keybinds.extra_copy.open_popup[/] (most likely `Y`) followed by [bright_cyan]keybinds.extra_copy.copy_single_path[/] (most likely `p`) to copy the path to your clipboard."
     ],
@@ -61,7 +72,10 @@
     ],
     "extra": "Moved in v0.7.0",
     "regex": [
-      { "find": "plugins.file_one.mime_rules", "replace": "interface.mime_rules" }
+      {
+        "find": "plugins.file_one.mime_rules",
+        "replace": "interface.mime_rules"
+      }
     ]
   },
   {
@@ -88,7 +102,13 @@
     "message": [
       "[bright_blue]plugins.finder.*[/] has been moved to [bright_cyan]plugins.fd.*[/] to keep it consistent with what it is interfacing with."
     ],
-    "extra": "Expanded in v0.6.0"
+    "extra": "Expanded in v0.6.0",
+    "regex": [
+      {
+        "find": "plugins.finder",
+        "replace": "plugins.fd"
+      }
+    ]
   },
   {
     "keys": ["keybinds.change_sort_order"],
@@ -107,7 +127,17 @@
       "- [bright_green]interface.preview_text.error[/] (for errors in rendering)",
       "- [bright_green]interface.preview_text.start[/] (shown for a split second when starting up)"
     ],
-    "extra": "Moved in v0.5.0"
+    "extra": "Moved in v0.5.0",
+    "regex": [
+      {
+        "find": "preview_error",
+        "replace": "preview_text.error"
+      },
+      {
+        "find": "preview_start",
+        "replace": "preview_text.start"
+      }
+    ]
   },
   {
     "keys": ["settings.preview_full"],

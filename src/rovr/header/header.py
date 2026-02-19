@@ -38,11 +38,11 @@ class HeaderArea(HorizontalGroup):
         try:
             tab_line = self.query_exactly_one(Tabline)
         except NoMatches:
-            return  # havent mounted yet
+            return  # haven't mounted yet
         # this might be a bit concerning, so im gonna explain it a bit.
-        # max width serves to ensure the tab container doesnt get too long
+        # max width serves to ensure the tab container doesn't get too long
         # and push header clock to the right.
-        # width serves to ensure the new tab button follows the tabline's
+        # width serves to ensure the new tab button follows the TabLine's
         # width, so that it always stays at the right
         tab_line.styles.max_width = (
             self.app.size.width

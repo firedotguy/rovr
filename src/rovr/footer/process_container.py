@@ -20,12 +20,12 @@ from rovr.functions import path as path_utils
 from rovr.functions.utils import is_being_used
 from rovr.screens import (
     CommonFileNameDoWhat,
-    Dismissable,
+    Dismissible,
     FileInUse,
     YesOrNo,
     typed,
 )
-from rovr.variables.constants import config, os_type, scroll_vindings
+from rovr.variables.constants import config, os_type, scroll_bindings
 
 if sys.version_info.major == 3 and sys.version_info.minor <= 13:
     from backports.zstd import tarfile
@@ -40,7 +40,7 @@ class ThickBar(BarRenderable):
 
 
 class ProgressBarContainer(VerticalGroup, inherit_bindings=False):
-    BINDINGS = scroll_vindings
+    BINDINGS = scroll_bindings
 
     def __init__(
         self,
@@ -113,7 +113,7 @@ class ProgressBarContainer(VerticalGroup, inherit_bindings=False):
     ) -> None:
         """Do something when an error occurs.
         Args:
-            dismiss_with(dict): The message for the Dismissable screen (must contain `message` and `subtitle`)
+            dismiss_with(dict): The message for the Dismissible screen (must contain `message` and `subtitle`)
             notify(dict): The notify message (must contain `message` and `title`)
             bar_text(str): The new text to update the label
         """
@@ -136,7 +136,7 @@ class ProgressBarContainer(VerticalGroup, inherit_bindings=False):
         if dismiss_with:
             self.app.call_from_thread(
                 self.app.push_screen_wait,
-                Dismissable(
+                Dismissible(
                     dismiss_with["message"], border_subtitle=dismiss_with["subtitle"]
                 ),
             )
@@ -265,7 +265,7 @@ class ProcessContainer(VerticalScroll):
                             do_what = self.app.call_from_thread(
                                 self.app.push_screen_wait,
                                 YesOrNo(
-                                    f"Trashing failed due to\n{exc}\nDo Permenant Deletion?",
+                                    f"Trashing failed due to\n{exc}\nDo Permanent Deletion?",
                                     with_toggle=True,
                                     border_subtitle="If this is a bug, please file an issue!",
                                     destructive=True,
@@ -339,7 +339,7 @@ class ProcessContainer(VerticalScroll):
                 },
             )
             return
-        # if there werent any files, show something useful
+        # if there weren't any files, show something useful
         # aside from 'Getting files to delete...'
         if files_to_delete == [] and folders_to_delete != []:
             self.app.call_from_thread(
@@ -347,7 +347,7 @@ class ProcessContainer(VerticalScroll):
                 files[-1],
             )
         elif files_to_delete == folders_to_delete == []:
-            # this cannot happen, but just as an easter egg :shippit:
+            # this cannot happen, but just as an easter egg
             self.app.call_from_thread(
                 bar.update_text, "Successfully deleted nothing!", False
             )
@@ -502,7 +502,7 @@ class ProcessContainer(VerticalScroll):
                 assert archive._archive is not None
                 last_update_time = time.monotonic()
                 for i, file_path in enumerate(files_to_archive):
-                    arcname = path.relpath(file_path, base_path)
+                    archive_name = path.relpath(file_path, base_path)
                     current_time = time.monotonic()
                     if (
                         current_time - last_update_time > 0.25
@@ -510,7 +510,7 @@ class ProcessContainer(VerticalScroll):
                     ):
                         self.app.call_from_thread(
                             bar.update_text,
-                            arcname,
+                            archive_name,
                         )
                         self.app.call_from_thread(bar.update_progress, progress=i + 1)
                         last_update_time = current_time
@@ -518,21 +518,21 @@ class ProcessContainer(VerticalScroll):
                     if _archive:
                         if archive._archive_type == "zip":
                             assert isinstance(_archive, zipfile.ZipFile)
-                            _archive.write(file_path, arcname=arcname)
+                            _archive.write(file_path, arcname=archive_name)
                         else:
                             assert isinstance(_archive, tarfile.TarFile)
-                            _archive.add(file_path, arcname=arcname)
+                            _archive.add(file_path, arcname=archive_name)
                 for p in files:
                     if path.isdir(p) and not os.listdir(p):
-                        arcname = path.relpath(p, base_path)
+                        archive_name = path.relpath(p, base_path)
                         _archive = archive._archive
                         if _archive:
                             if archive._archive_type == "zip":
                                 assert isinstance(_archive, zipfile.ZipFile)
-                                _archive.write(p, arcname=arcname)
+                                _archive.write(p, arcname=archive_name)
                             else:
                                 assert isinstance(_archive, tarfile.TarFile)
-                                _archive.add(p, arcname=arcname)
+                                _archive.add(p, arcname=archive_name)
 
         except Exception as exc:
             path_utils.dump_exc(self, exc)
@@ -572,7 +572,7 @@ class ProcessContainer(VerticalScroll):
             "Preparing to extract...",
         )
 
-        do_what_on_existance = "ask"
+        do_what_on_existence = "ask"
         try:
             if not path.exists(destination_path):
                 os.makedirs(destination_path)
@@ -598,7 +598,7 @@ class ProcessContainer(VerticalScroll):
                         last_update_time = current_time
                     final_path = path.join(destination_path, filename)
                     if path.exists(final_path) and path.isfile(final_path):
-                        if do_what_on_existance == "ask":
+                        if do_what_on_existence == "ask":
                             response = self.app.call_from_thread(
                                 self.app.push_screen_wait,
                                 CommonFileNameDoWhat(
@@ -609,10 +609,10 @@ class ProcessContainer(VerticalScroll):
                             )
                             response = cast(typed.CommonFileNameDoWhat, response)
                             if response["same_for_next"]:
-                                do_what_on_existance = response["value"]
+                                do_what_on_existence = response["value"]
                             val = response["value"]
                         else:
-                            val = do_what_on_existance
+                            val = do_what_on_existence
                         match val:
                             case "overwrite":
                                 pass
@@ -701,13 +701,15 @@ class ProcessContainer(VerticalScroll):
         self.app.call_from_thread(bar.add_class, "done")
 
     @work(thread=True)
-    def paste_items(self, copied: list[str], cutted: list[str], dest: str = "") -> None:
+    def paste_items(
+        self, copied: list[str], has_cut: list[str], dest: str = ""
+    ) -> None:
         """
         Paste copied or cut files to the current directory
         Args:
             copied (list[str]): A list of items to be copied to the location
-            cutted (list[str]): A list of items to be cut to the location
-            dest (str) = getcwd(): The directory to copy to.
+            has_cut (list[str]): A list of items to be cut to the location
+            dest (str): The directory to copy to.
         """
         if dest == "":
             dest = os.getcwd()
@@ -725,7 +727,7 @@ class ProcessContainer(VerticalScroll):
         cut_files__folders = []
         for file in copied:
             files_to_copy.extend(path_utils.get_recursive_files(file))
-        for file in cutted:
+        for file in has_cut:
             if path.isdir(file):
                 cut_files__folders.append(path_utils.normalise(file))
             files, folders = path_utils.get_recursive_files(file, with_folders=True)
@@ -734,7 +736,7 @@ class ProcessContainer(VerticalScroll):
         self.app.call_from_thread(
             bar.update_progress, total=int(len(files_to_copy) + len(files_to_cut)) + 1
         )
-        action_on_existance = "ask"
+        action_on_existence = "ask"
         last_update_time = time.monotonic()
         if files_to_copy:
             self.app.call_from_thread(
@@ -765,7 +767,7 @@ class ProcessContainer(VerticalScroll):
                     )
                     if path.exists(path.join(dest, item_dict["relative_loc"])):
                         # check if overwrite
-                        if action_on_existance == "ask":
+                        if action_on_existence == "ask":
                             response = self.app.call_from_thread(
                                 self.app.push_screen_wait,
                                 CommonFileNameDoWhat(
@@ -776,10 +778,10 @@ class ProcessContainer(VerticalScroll):
                             )
                             response = cast(typed.CommonFileNameDoWhat, response)
                             if response["same_for_next"]:
-                                action_on_existance = response["value"]
+                                action_on_existence = response["value"]
                             val = response["value"]
                         else:
-                            val = action_on_existance
+                            val = action_on_existence
                         match val:
                             case "overwrite":
                                 pass
@@ -881,7 +883,7 @@ class ProcessContainer(VerticalScroll):
                         ) == path_utils.normalise(item_dict["path"]):
                             cut_ignore.append(item_dict["path"])
                             continue
-                        if action_on_existance == "ask":
+                        if action_on_existence == "ask":
                             response = self.app.call_from_thread(
                                 self.app.push_screen_wait,
                                 CommonFileNameDoWhat(
@@ -892,10 +894,10 @@ class ProcessContainer(VerticalScroll):
                             )
                             response = cast(typed.CommonFileNameDoWhat, response)
                             if response["same_for_next"]:
-                                action_on_existance = response["value"]
+                                action_on_existence = response["value"]
                             val = response["value"]
                         else:
-                            val = action_on_existance
+                            val = action_on_existence
                         match val:
                             case "overwrite":
                                 pass
@@ -966,7 +968,7 @@ class ProcessContainer(VerticalScroll):
                     "message": "Certain files could not be deleted as they are currently being used",
                     "title": "Delete Files",
                 },
-                bar_text=path.basename(cutted[-1]),
+                bar_text=path.basename(has_cut[-1]),
             )
             return
         if self.has_perm_error:
@@ -975,13 +977,13 @@ class ProcessContainer(VerticalScroll):
                     "message": "Certain files could not be deleted due to PermissionError.",
                     "title": "Delete Files",
                 },
-                bar_text=path.basename(cutted[-1]),
+                bar_text=path.basename(has_cut[-1]),
             )
             return
         self.app.query_one("Clipboard").checker_wrapper()
         self.app.call_from_thread(
             bar.update_icon,
-            icon_utils.get_icon("general", "cut" if len(cutted) else "copy")[0],
+            icon_utils.get_icon("general", "cut" if len(has_cut) else "copy")[0],
         )
         self.app.call_from_thread(
             bar.update_icon,

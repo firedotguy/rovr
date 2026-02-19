@@ -21,7 +21,7 @@ from rovr.functions.icons import get_icon_for_file, get_icon_for_folder
 from rovr.monkey_patches.puremagic_patch import puremagic
 from rovr.variables.constants import config, log_name, os_type
 
-# windows needs nt, because scandir returns
+# windows needs nt, because os.scandir returns
 # nt.DirEntry instead of os.DirEntry on
 # windows. weird, yes, but I can't do anything
 if os_type == "Windows":
@@ -189,7 +189,7 @@ class CWDObjectReturnDict(TypedDict):
 def get_extension_sort_key(file_dict: dict) -> tuple[int, str]:
     name = file_dict["name"]
     if "." not in name:
-        # extensionless files
+        # files without extensions
         return (1, name.lower())
     elif name.startswith(".") and name.count(".") == 1:
         # dotfiles
@@ -505,7 +505,7 @@ def ensure_existing_directory(directory: str) -> str:
     return directory
 
 
-def _should_include_macos_mount_point(partition: "psutil._common.sdiskpart") -> bool:
+def _should_include_macos_mount_point(partition: psutil._common.sdiskpart) -> bool:
     """
     Determine if a macOS mount point should be included in the drive list.
 
@@ -531,7 +531,7 @@ def _should_include_macos_mount_point(partition: "psutil._common.sdiskpart") -> 
     return not partition.mountpoint.startswith(("/System/", "/dev", "/private"))
 
 
-def _should_include_linux_mount_point(partition: "psutil._common.sdiskpart") -> bool:
+def _should_include_linux_mount_point(partition: psutil._common.sdiskpart) -> bool:
     """
     Determine if a Linux/WSL mount point should be included in the drive list.
 

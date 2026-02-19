@@ -12,14 +12,14 @@ from textual.widgets.selection_list import Selection, SelectionType
 
 from rovr.classes.mixins import CheckboxRenderingMixin
 from rovr.functions import icons as icon_utils
-from rovr.variables.constants import vindings
+from rovr.variables.constants import bindings
 
 from .input import ModalInput
 from .typed import ArchiveScreenReturnType
 
 
 class ArchiveTypes(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self) -> None:
         super().__init__(
@@ -66,7 +66,7 @@ class ArchiveTypes(CheckboxRenderingMixin, SelectionList, inherit_bindings=False
 
 
 class ArchiveCompression(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self) -> None:
         super().__init__(
@@ -140,7 +140,7 @@ class ArchiveCompression(CheckboxRenderingMixin, SelectionList, inherit_bindings
         # https://github.com/Textualize/textual/pull/6224
         # essentially, the issue is that there isnt a set_options
         # method for SelectionList, only for OptionList, but using
-        # OptionList's set_options doesnt clear selected or values
+        # OptionList's set_options doesn't clear selected or values
         # but nothing was done, so I added it myself.
         self._selected.clear()
         self._values.clear()

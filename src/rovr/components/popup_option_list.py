@@ -59,6 +59,6 @@ class PopupOptionList(OptionList):
             self.app.file_list.add_class("-popup-shown")
 
     @on(events.Hide)
-    def unforce_highlight_option(self, event: events.Hide) -> None:
+    def stop_force_highlight_option(self, event: events.Hide) -> None:
         if self.app.file_list.has_class("-popup-shown"):
             self.app.file_list.remove_class("-popup-shown")

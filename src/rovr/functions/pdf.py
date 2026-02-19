@@ -176,7 +176,7 @@ def get_pdf_images(
     use_pdftocairo: bool = False,
     thread_count: int = 1,
 ) -> list[PILImage]:
-    """Render PDF pages as PIL images using poppler's ``pdftoppm`` or ``pdftocairo``.
+    """Render PDF pages as PIL images using poppler's `pdftoppm` or `pdftocairo`.
     Args:
         pdf_path: Path to the PDF file
         first_page: First page to render (1-indexed)

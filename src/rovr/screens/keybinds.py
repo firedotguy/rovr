@@ -11,11 +11,11 @@ from rovr.classes.textual_options import KeybindOption
 from rovr.components import SearchInput
 from rovr.functions import icons
 from rovr.functions.utils import check_key
-from rovr.variables.constants import config, schema, vindings
+from rovr.variables.constants import bindings, config, schema
 
 
 class KeybindList(OptionList, inherit_bindings=False):
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self, **kwargs) -> None:
         keybind_data, primary_keybind_data = self.get_keybind_data()
@@ -56,18 +56,18 @@ class KeybindList(OptionList, inherit_bindings=False):
                 self.highlighted = clicked_option
 
     def get_keybind_data(self) -> tuple[list[tuple[str, str]], list[str]]:
-        # Generate keybind data programmatically
+        # Generate keybind data
         keybind_data: list[tuple[str, str]] = []
         primary_keys: list[str] = []
-        subkeys: list[tuple[str, dict[str, list[str] | str]]] = []
+        sub_dict_data: list[tuple[str, dict[str, list[str] | str]]] = []
         keybinds_schema = schema["properties"]["keybinds"]["properties"]
         # no choice to use Any, else ty screams at me and I want
         # to see zero errors from ty
         config_keybinds = cast(dict[str, Any], config["keybinds"])
         for action, keys in config_keybinds.items():
             if isinstance(keys, dict):
-                # it is a subdict, for other modals
-                subkeys.append((action, keys))
+                # it is a sub-dict, for other modals
+                sub_dict_data.append((action, keys))
                 continue
             if action in keybinds_schema:
                 display_name = keybinds_schema[action].get("display_name", action)
@@ -105,7 +105,7 @@ class KeybindList(OptionList, inherit_bindings=False):
         # for alternate screens
         keybind_data.append(("alternate layers", "--section--"))
         primary_keys.append("")
-        for key, subdict in subkeys:
+        for key, subdict in sub_dict_data:
             keybind_data.append(("--section--", key))
             primary_keys.append("")
             keybinds_schema = schema["properties"]["keybinds"]["properties"][key][

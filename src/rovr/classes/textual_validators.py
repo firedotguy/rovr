@@ -9,7 +9,7 @@ from rovr.variables.constants import os_type
 
 class IsValidFilePath(Validator):
     def __init__(self, strict: bool = False) -> None:
-        super().__init__(failure_description="Path contains illegal characers.")
+        super().__init__(failure_description="Path contains illegal characters.")
         self.strict = strict
 
     def validate(self, value: str) -> ValidationResult:
@@ -20,7 +20,7 @@ class IsValidFilePath(Validator):
             return self.failure()
 
 
-class PathDoesntExist(Validator):
+class PathNoLongerExists(Validator):
     def __init__(self, strict: bool = True, accept: list[str] | None = None) -> None:
         super().__init__(failure_description="Path already exists.")
         self.strict = strict

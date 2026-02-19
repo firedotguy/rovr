@@ -97,15 +97,15 @@ class Application(App, inherit_bindings=False):
 
     # reactivity
     HORIZONTAL_BREAKPOINTS = (
-        [(0, "-filelistonly"), (35, "-nopreview"), (70, "-all-horizontal")]
+        [(0, "-filelist-only"), (35, "-no-preview"), (70, "-all-horizontal")]
         if config["interface"]["use_reactive_layout"]
         else []
     )
     VERTICAL_BREAKPOINTS = (
         [
             (0, "-middle-only"),
-            (16, "-nomenu-atall"),
-            (19, "-nopath"),
+            (16, "-no-menu-at-all"),
+            (19, "-no-path"),
             (24, "-all-vertical"),
         ]
         if config["interface"]["use_reactive_layout"]
@@ -134,7 +134,7 @@ class Application(App, inherit_bindings=False):
         self._force_crash_in: float = force_crash_in
         self._file_list_container = FileListContainer()
         self.file_list = self._file_list_container.filelist
-        # cannot use self.clipboard, reserved for textual's clipboard
+        # cannot use self.clipboard, reserved for Textual's clipboard
         self.Clipboard = Clipboard(id="clipboard")
         if startup_path:
             chdir(ensure_existing_directory(startup_path))
@@ -145,7 +145,7 @@ class Application(App, inherit_bindings=False):
             header = HeaderArea(id="headerArea")
             self.tabWidget = header.tabline
             yield header
-            with VerticalGroup(id="menuwrapper"):
+            with VerticalGroup(id="menu_wrapper"):
                 with HorizontalScroll(id="menu"):
                     yield CopyButton()
                     yield CutButton()
@@ -201,7 +201,7 @@ class Application(App, inherit_bindings=False):
             self.add_class("comfy-panels")
 
         # border titles
-        self.query_one("#menuwrapper").border_title = "Options"
+        self.query_one("#menu_wrapper").border_title = "Options"
         self.query_one("#pinned_sidebar_container").border_title = "Sidebar"
         self.query_one("#file_list_container").border_title = "Files"
         self.query_one("#processes").border_title = "Processes"
@@ -369,9 +369,9 @@ class Application(App, inherit_bindings=False):
         elif check_key(event, config["keybinds"]["toggle_footer"]):
             self.file_list.focus()
             self.query_one(StateManager).toggle_footer()
-        elif check_key(event, config["keybinds"]["toggle_menuwrapper"]):
+        elif check_key(event, config["keybinds"]["toggle_menu_wrapper"]):
             self.file_list.focus()
-            self.query_one(StateManager).toggle_menuwrapper()
+            self.query_one(StateManager).toggle_menu_wrapper()
         elif (
             check_key(event, config["keybinds"]["tab_next"])
             and self.tabWidget.active_tab is not None
@@ -401,10 +401,10 @@ class Application(App, inherit_bindings=False):
             def on_response(response: str) -> None:
                 """Handle the response from the ZDToDirectory dialog."""
                 if response:
-                    pathinput: PathInput = self.query_one(PathInput)
-                    pathinput.value = response
-                    pathinput.on_input_submitted(
-                        PathInput.Submitted(pathinput, pathinput.value)
+                    pathInput: PathInput = self.query_one(PathInput)
+                    pathInput.value = response
+                    pathInput.on_input_submitted(
+                        PathInput.Submitted(pathInput, pathInput.value)
                     )
 
             self.push_screen(ZDToDirectory(), on_response)
@@ -654,7 +654,7 @@ class Application(App, inherit_bindings=False):
                 # essentially sleep 1 second, but with extra steps
                 sleep(0.25)
                 if self.return_code is not None:
-                    # failsafe if for any reason, the thread continues running after exit
+                    # fail safe if for any reason, the thread continues running after exit
                     return
             count += 1
             if count >= drive_update_every:
@@ -683,10 +683,10 @@ class Application(App, inherit_bindings=False):
             if new_mtime != pins_mtime:
                 pins_mtime = new_mtime
                 if new_mtime is not None:
-                    # no, this doesnt need to be called from thread
+                    # no, this doesn't need to be called from thread
                     # wtf is wrong with you coderabbit, one day you say
                     # it has to be called from thread, and the other day
-                    # you say it shouldnt be called from thread, make up
+                    # you say it shouldn't be called from thread, make up
                     # your mind (but i already made up my own.)
                     self.query_one(PinnedSidebar).reload_pins()
                     reload_called = True

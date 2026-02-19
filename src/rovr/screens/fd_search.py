@@ -18,7 +18,7 @@ from rovr.components import DoubleClickableOptionList, ModalSearchScreen
 from rovr.functions import icons as icon_utils
 from rovr.functions import path as path_utils
 from rovr.functions.icons import get_icon_for_file, get_icon_for_folder
-from rovr.variables.constants import config, vindings
+from rovr.variables.constants import bindings, config
 from rovr.variables.maps import FD_TYPE_TO_ALIAS
 
 INITIAL_FILTER_TYPES: dict[str, bool] = {
@@ -28,7 +28,7 @@ INITIAL_FILTER_TYPES: dict[str, bool] = {
 
 
 class FileSearchToggles(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
-    BINDINGS: ClassVar[list[BindingType]] = list(vindings)
+    BINDINGS: ClassVar[list[BindingType]] = list(bindings)
 
     def __init__(self) -> None:
         super().__init__(

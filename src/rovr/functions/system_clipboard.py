@@ -11,7 +11,7 @@ from pathlib import Path
 
 @dataclass
 class ProcessResult:
-    returncode: int
+    return_code: int
     args: list[str]
     stdout: str
     stderr: str
@@ -33,11 +33,11 @@ class ClipboardToolNotFoundError(ClipboardError):
 
 
 class ClipboardCommandError(ClipboardError):
-    def __init__(self, tool: str, returncode: int, stderr: str | None = None) -> None:
+    def __init__(self, tool: str, return_code: int, stderr: str | None = None) -> None:
         self.tool = tool
-        self.returncode = returncode
+        self.return_code = return_code
         self.stderr = stderr
-        message = f"Clipboard command '{tool}' failed with exit code {returncode}"
+        message = f"Clipboard command '{tool}' failed with exit code {return_code}"
         if stderr and stderr.strip():
             message += f": {stderr.strip()}"
         super().__init__(message)
@@ -67,11 +67,11 @@ async def copy_files_to_system_clipboard(
 
         if output is None:
             return True  # No operation needed for empty paths
-        elif output.returncode == 0:
+        elif output.return_code == 0:
             return True
         else:
             tool = output.args[0] if output.args else "unknown"
-            return ClipboardCommandError(tool, output.returncode, output.stderr)
+            return ClipboardCommandError(tool, output.return_code, output.stderr)
     except ClipboardError as exc:
         return exc
     except TimeoutError as exc:
@@ -120,7 +120,7 @@ async def _copy_windows(paths: list[str]) -> ProcessResult | None:
         exc.add_note("powershell clipboard command timed out")
         raise exc from None
     return ProcessResult(
-        returncode=process.returncode or 0,
+        return_code=process.return_code or 0,
         args=command,
         stdout=stdout.decode().strip(),
         stderr=stderr.decode().strip(),
@@ -154,7 +154,7 @@ async def _copy_macos(paths: list[str]) -> ProcessResult | None:
         exc.add_note("clippy timed out")
         raise exc from None
     return ProcessResult(
-        returncode=process.returncode or 0,
+        return_code=process.return_code or 0,
         args=command,
         stdout=stdout.decode().strip(),
         stderr=stderr.decode().strip(),
@@ -213,7 +213,7 @@ async def _copy_linux(paths: list[str]) -> ProcessResult | None:
         exc.add_note(f"{using} timed out")
         raise exc from None
     return ProcessResult(
-        returncode=process.returncode or 0,
+        return_code=process.return_code or 0,
         args=command,
         stdout="" if stdout is None else stdout.decode().strip(),
         stderr="" if stderr is None else stderr.decode().strip(),

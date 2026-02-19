@@ -89,7 +89,7 @@ class LoadingPreview(Static):
 
     def on_mount(self) -> None:
         assert isinstance(self.parent, PreviewContainer)
-        # sad thing is that you cant just rawdog `self.styles` = `self.parent.styles`
+        # sad thing is that you cant just raw-dog `self.styles` = `self.parent.styles`
         self.border_title = self.parent.border_title
         self.border_subtitle = self.parent.border_subtitle
         self.styles.border = self.parent.styles.border
@@ -331,7 +331,7 @@ class PreviewContainer(Container):
         """
         Show PDF preview. Runs in a thread.
         The job of this function is to load the pdf file for the first time.
-        Or ensure the batchwise loading
+        Or ensure the batched loading
         """
         self.app.call_from_thread(setattr, self, "border_title", titles.pdf)
 
@@ -361,7 +361,7 @@ class PreviewContainer(Container):
                 return
             self.pdf.images = result
 
-            # The only one case when current page and border subtites
+            # The only one case when current page and border subtitles
             # should be manually adjusted. Not the best design though.
             self.pdf.current_page = 0
             self.app.call_from_thread(
@@ -397,8 +397,8 @@ class PreviewContainer(Container):
                 self.call_later(lambda: self.post_message(self.SetLoading(False)))
             # Note - This should_cancel must be kept here, not before the `load_pdf_pages` call
             # That, somehow doesn't prevents multiple threads executing the load
-            # Even though, we do succesfully prevent multiple threads appending the results
-            # via this one
+            # even though, we successful prevent multiple threads
+            # appending the results via this one
             # Also we must ensure to cancel only after you reset the SetLoading(false)
             # We don't want threads to Set the screen in Loading state, and never turn it back
             if should_cancel():
@@ -535,7 +535,7 @@ class PreviewContainer(Container):
         self.app.call_from_thread(setattr, self, "border_title", titles.file)
 
         if not isinstance(self._current_content, str):
-            # force read by bruteforcing encoding methods
+            # force read by brute-forcing encoding methods
             encodings_to_try = [
                 "utf8",
                 "utf16",
@@ -767,8 +767,8 @@ class PreviewContainer(Container):
         """Public method to show preview."""
         if (
             "hide" in self.classes
-            or "-nopreview" in self.screen.classes
-            or "-filelistonly" in self.screen.classes
+            or "-no-preview" in self.screen.classes
+            or "-filelist-only" in self.screen.classes
         ):
             self._pending_preview_path = file_path
             return
