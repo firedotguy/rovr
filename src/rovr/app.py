@@ -191,14 +191,16 @@ class Application(App, inherit_bindings=False):
                 self.exit()
             return
         # compact mode
-        if config["interface"]["compact_mode"]["buttons"]:
-            self.add_class("compact-buttons")
-        else:
-            self.add_class("comfy-buttons")
-        if config["interface"]["compact_mode"]["panels"]:
-            self.add_class("compact-panels")
-        else:
-            self.add_class("comfy-panels")
+        self.query_one("#root").add_class(
+            "compact-buttons"
+            if config["interface"]["compact_mode"]["buttons"]
+            else "comfy-buttons"
+        )
+        self.query_one("#root").add_class(
+            "compact-panels"
+            if config["interface"]["compact_mode"]["panels"]
+            else "comfy-panels"
+        )
 
         # border titles
         self.query_one("#menu_wrapper").border_title = "Options"

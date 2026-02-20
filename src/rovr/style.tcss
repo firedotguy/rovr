@@ -27,15 +27,17 @@ $scrollbar-background-hover: $primary-muted;
 $scrollbar-background-active: $primary-muted;
 $scrollbar-corner-color: $primary-muted;
 
-Screen.-all-horizontal.compact-buttons {
-  #menu_wrapper #below_menu #path_switcher {
-    border-left: $border-style $border-blurred
+Screen.-all-horizontal #root.compact-buttons {
+  #menu_wrapper #below_menu PathInput {
+    border-left: $border-style $border-blurred;
+    padding-left: 1;
   }
   #menu_wrapper:focus-within #below_menu #path_switcher {
-    border-left: $border-style $border
+    border-left: $border-style $border;
   }
   #menu_wrapper:focus-within #below_menu #path_switcher.hide_border_bottom {
-    border-left: $border-style $accent
+    border-left: $border-style $accent;
+    padding-left: 2;
   }
 }
 
@@ -44,9 +46,9 @@ Screen.-all-horizontal.compact-buttons {
 #pinned_sidebar_container,
 #file_list_container,
 #preview_sidebar,
-ZoxideOptionList,
-FileSearchOptionList, FileSearchToggles,
-ContentSearchOptionList, ContentSearchToggles,
+FileSearchToggles,
+ContentSearchToggles,
+DoubleClickableOptionList,
 #footer > *,
 PopupOptionList,
 .comfy-buttons #path_switcher,
@@ -82,10 +84,8 @@ ArchiveCreationScreen OptionList {
 #file_list_container:focus-within,
 #preview_sidebar:focus-within,
 #preview_sidebar:focus,
-ZDToDirectory > VerticalGroup:focus-within > ZoxideOptionList,
-FileSearch > VerticalGroup:focus-within > FileSearchOptionList,
+ModalScreen > VerticalGroup:focus-within > DoubleClickableOptionList,
 FileSearchToggles:focus,
-ContentSearch > VerticalGroup:focus-within > ContentSearchOptionList,
 ContentSearchToggles:focus,
 #file_list.-maximized,
 #pinned_sidebar.-maximized,
@@ -474,9 +474,9 @@ Content.selected { color: red }
 CommandList,
 FileList, PinnedSidebar, Clipboard,
 PopupOptionList,
-ZoxideOptionList,
-FileSearchToggles, FileSearchOptionList,
-ContentSearchToggles, ContentSearchOptionList,
+FileSearchToggles,
+ContentSearchToggles,
+DoubleClickableOptionList,
 KeybindList,
 PasteScreen OptionList,
 DeleteFiles OptionList,
@@ -601,6 +601,7 @@ ArchiveCreationScreen {
       OptionList,
       RadioList {
         border: $border-style $border;
+        background: transparent !important;
         .option-list--option-highlighted {
           background: $primary !important;
           color: $background !important;
@@ -757,6 +758,10 @@ CommonFileNameDoWhat #dialog {
   grid-rows: 1fr 3 3 1; /* need the two lines for label */
   padding: 1 3 0 3;
   border: $border-style $border;
+    height: 60vh;
+    max-height: 60vh;
+    width: 60vw;
+    max-width: 60vw;
 }
 
 FileInUse {
@@ -781,6 +786,10 @@ DeleteFiles {
     grid-gutter: 1 2;
     grid-rows: 0.75fr 1fr 3 1; /* no issues for now */
     padding: 1 3;
+    height: 60vh;
+    max-height: 60vh;
+    width: 60vw;
+    max-width: 60vw;
     border: $border-style $border;
     &.with_trash {
       grid-size: 3 3;
@@ -926,6 +935,12 @@ LoadingIndicator {
   }
 }
 .compact-buttons {
+  #headerArea {
+    height: 1;
+    HeaderClock {
+      border-bottom: none !important;
+    }
+  }
   #below_menu {
     height: 2;
     Input {
@@ -991,12 +1006,12 @@ LoadingIndicator {
     max-width: 3;
   }
 }
-App.comfy-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
-App.comfy-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
+#root.comfy-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
+#root.comfy-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
   margin: -1 1 0 1
 }
-App.compact-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
-App.compact-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
+#root.compact-buttons Screen.-no-preview #below_menu PathAutoCompleteInput,
+#root.compact-buttons Screen.-filelist-only #below_menu PathAutoCompleteInput {
   margin: -1 -1 0 -1
 }
 Screen.-filelist-only,
@@ -1025,7 +1040,6 @@ Screen {
     #content_search_toggles { display: none }
     #dialog.delete {
       grid-size: 1 5 !important;
-      max-height: 100vh;
       grid-rows: 0.75fr 1fr 3 3 1 !important;
       padding: 0 1;
       &.with_trash { grid-rows: 0.75fr 1fr 3 3 3 1 !important }
@@ -1054,7 +1068,8 @@ Screen {
     #content_search_toggles { display: none }
     #dialog.delete {
       grid-size: 2 4 !important;
-      max-height: 75vh;
+      max-width: 80vw;
+      width: 80vw;
       grid-rows: 0.75fr 1fr 3 3 1 !important;
       padding: 0 1;
       &.with_trash { grid-rows: 0.75fr 1fr 3 3 3 1 !important }

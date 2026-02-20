@@ -138,6 +138,15 @@ svg-fmt.ref = "screenshot-format"
 flame.help = "Start rovr with pyinstrument for flamegraph profiling"
 flame.cmd = "pyinstrument --renderer=html --timeline --use-timing-thread --show-all -m rovr"
 
+snap.help = ""
+snap.ref = "snip"
+snip.help = "Take a screenshot of the app after a certain delay, before saving to the docs screenshots folder"
+snip.cmd = "textual run --screenshot ${delay} rovr.__main__:cli --screenshot-path docs/public/screenshots --screenshot-filename ${filename} -- --without theme.transparent"
+snip.args = [
+  { name = "filename", help = "Filename of the screenshot", type = "string", positional = true, required = true },
+  { name = "delay", help = "Delay in seconds before taking the screenshot", default = 10, type = "integer" },
+]
+
 [tool.poe.tasks.build]
 help = "Build rovr into an executable using Nuitka"
 sequence = [
