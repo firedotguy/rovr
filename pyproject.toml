@@ -113,27 +113,27 @@ icon-test.help = "Print all available icons to the terminal for testing"
 icon-test.cmd = "docs/scripts/icon_test.py"
 gen-keys.help = "Generate the keybinds documentation"
 gen-keys.cmd = "docs/scripts/generate_keybinds.py"
+typed.help = ""
+typed.ref = "schema-to-dict"
 schema-to-dict.help = "Convert the JSON schema into a Python TypedDict for internal use"
 schema-to-dict.sequence = [
   "_docscripts_setup",
   { cmd = "jsonschema-gentypes --json-schema ./src/rovr/config/schema.json --python ./src/rovr/classes/config.py" },
   "_docscripts_cleanup"
 ]
-typed.help = "(alias) Convert the JSON schema into a Python TypedDict for internal use"
-typed.ref = "schema-to-dict"
 
 check.help = "Run all checks (type checking and linting)"
 check.sequence = [ { cmd = "ty check" },{ cmd = "ruff check" } ]
 
+fmt.help = ""
+fmt.ref = "format"
 format.help = "Run ruff related formatters"
 format.sequence = [ { cmd = "ruff check --unsafe-fixes --fix"}, { cmd = "ruff format"} ]
-fmt.help = "(alias) Run ruff related formatters"
-fmt.ref = "format"
 
+svg-fmt.help = ""
+svg-fmt.ref = "screenshot-format"
 screenshot-format.help = "Format all SVG screenshots in the docs"
 screenshot-format.cmd = 'pnpx prettier --write "docs/public/screenshots/*.svg" --parser html --bracket-same-line --print-width 160'
-svg-fmt.help = "(alias) Format all SVG files in the docs"
-svg-fmt.ref = "screenshot-format"
 
 flame.help = "Start rovr with pyinstrument for flamegraph profiling"
 flame.cmd = "pyinstrument --renderer=html --timeline --use-timing-thread --show-all -m rovr"
