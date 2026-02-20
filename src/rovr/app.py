@@ -7,7 +7,7 @@ from typing import Callable, Iterable
 
 from rich.console import Console, RenderableType
 from rich.protocol import is_renderable
-from textual import events, on, work
+from textual import constants, events, on, work
 from textual.app import WINDOWS, App, ComposeResult, ScreenStackError, SystemCommand
 from textual.binding import Binding
 from textual.color import ColorParseError
@@ -74,6 +74,9 @@ from rovr.variables.constants import MaxPossible, config, log_name
 from rovr.variables.maps import VAR_TO_DIR
 
 console = Console()
+
+if constants.SCREENSHOT_LOCATION:
+    constants.SCREENSHOT_LOCATION = normalise(getcwd(), constants.SCREENSHOT_LOCATION)
 
 
 class Application(App, inherit_bindings=False):
