@@ -1,8 +1,9 @@
 import shutil
+import threading
 from contextlib import suppress
 from io import TextIOWrapper
 from os import chdir, getcwd, path
-from time import perf_counter, sleep
+from time import perf_counter
 from typing import Callable, Iterable
 
 from rich.console import Console, RenderableType
@@ -137,6 +138,7 @@ class Application(App, inherit_bindings=False):
         self._force_crash_in: float = force_crash_in
         self._file_list_container = FileListContainer()
         self.file_list = self._file_list_container.filelist
+        self._shutdown_event = threading.Event()
         # cannot use self.clipboard, reserved for Textual's clipboard
         self.Clipboard = Clipboard(id="clipboard")
         if startup_path:
@@ -266,6 +268,9 @@ class Application(App, inherit_bindings=False):
         self.title = ""
         if self._force_crash_in > 0:
             self.set_timer(self._force_crash_in, lambda: 1 / 0)
+
+    def on_unmount(self) -> None:
+        self._shutdown_event.set()
 
     @work
     async def action_focus_next(self) -> None:
@@ -657,7 +662,8 @@ class Application(App, inherit_bindings=False):
         while True:
             for _ in range(4):
                 # essentially sleep 1 second, but with extra steps
-                sleep(0.25)
+                if self._shutdown_event.wait(timeout=0.25):
+                    return
                 if self.return_code is not None:
                     # fail safe if for any reason, the thread continues running after exit
                     return
