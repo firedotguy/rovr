@@ -434,6 +434,9 @@ Tooltip {
     height: $footer_focus_height;
     max-height: 40vh;
   }
+  * {
+    scrollbar-size: 1 1;
+  }
 }
 
 #processes { padding: 0 0 0 1 }
@@ -443,7 +446,6 @@ Tooltip {
   padding-left: 1;
   padding-right: 0;
   scrollbar-gutter: stable;
-  scrollbar-size: 1 1;
   & > VerticalGroup > Static {
     text-wrap: nowrap;
     text-overflow: ellipsis;
