@@ -94,6 +94,7 @@ variables = {
     - Parody to my current editor, [helix](https://helix-editor.com)
         - If [NeoVim](https://github.com/neovim/neovim) is considered modern, then [Helix](https://github.com/helix-editor/helix) is post-modern
         - If [SuperFile](https://github.com/yorukot/superfile) is considered modern, then [rovr](https://github.com/NSPC911/rovr) is post-modern
+            - This is also the reason why rovr is very oddly similar to superfile
 
 3. What can I contribute?
     - Themes, and features can be contributed.
@@ -108,14 +109,23 @@ variables = {
 5. How do I make a feature suggestion?
     - Open an issue using the `feature-request` tag, with an estimated difficulty as an optional difficulty level label
 
-6. Why not ratatui or bubbletea??? <sub><i>angry noises</i></sub>
-    - I like Python.
+6. Why not ratatui (rust) or bubbletea (go), why python, why??? <sub><i>sad, angry, weird compiled noises</i></sub>
+    - I like Python, feel free to leave if you hate it.
 
 7. What's with the name?
     - Kind of a weird thing. [ranger](https://github.com/ranger/ranger) is a terminal file manager written in Python. And there is a car brand named Range Rover. Range~~r~~. Hence, I wanted to use "rover", but there is already an existing file explorer named [rover](https://github.com/lecram/rover), so I just removed the "e" to be a bit more fancy.
 
 8. How should I stylize rovr?
     - Just "rovr", please.
+
+9. Why should I use rovr?
+    - I don't want to sell it to you. I made it for myself. If you don't like it, sure go ahead, use yazi (rust) or superfile (go), or heck even use the cli, i don't care.
+
+10. OhMGee why are there so many borders and so many icons and so many xxx and so many yyy??? <sub><i>more angry noises</i></sub>
+    - Keep in mind, you can disable them. The screenshot is my setup, and the default setup. Textual CSS lets you hide things, disable borders, etc etc, so you can make it look however you want.
+
+11. Is this vibe-coded?
+    - Depends on the meaning. AI was used in certain parts of the code, especially in [src/rovr/classes/archive.py](https://github.com/NSPC911/rovr/blob/master/src/rovr/classes/archive.py), but aside from that, it is pretty far and few between.
 
 ### License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
