@@ -63,8 +63,9 @@ dev = [
 ]
 docscripts = [
   "json-schema-for-humans>=1.5.1",
-  "poethepoet>=0.41.0",
   "jsonschema-gentypes>=2.13.0",
+  "poethepoet>=0.41.0",
+  "ruff>=0.15.0",
 ]
 
 [build-system]
@@ -119,7 +120,8 @@ schema-to-dict.help = "Convert the JSON schema into a Python TypedDict for inter
 schema-to-dict.sequence = [
   "_docscripts_setup",
   { cmd = "jsonschema-gentypes --json-schema ./src/rovr/config/schema.json --python ./src/rovr/classes/config.py" },
-  "_docscripts_cleanup"
+  "_docscripts_cleanup",
+  "format"
 ]
 
 check.help = "Run all checks (type checking and linting)"

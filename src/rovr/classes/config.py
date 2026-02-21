@@ -65,19 +65,25 @@ r""" Default value of the field path 'Rovr Config interface image_protocol' """
 
 
 _ROVR_CONFIG_INTERFACE_MIME_RULES_DEFAULT = {
-    "text/*": "text",
-    "image/svg+xml": "resvg",
-    "image/*": "image",
+    "text/.*": "text",
+    "application/(json|javascript|xml|raml\\+yaml)": "text",
+    "application/x-(yaml|script|pem-file|subrip|typescript)": "text",
+    "application/(mbox|ndjson|wine-extension-ini)": "text",
+    "image/svg\\+xml": "resvg",
+    "image/(avif|hei.|jxl)": "image",
+    "image/.*": "image",
     "application/pdf": "pdf",
-    "application/zip": "archive",
-    "application/x-tar": "archive",
-    "application/gzip": "archive",
-    "application/x-bzip2": "archive",
-    "application/x-xz": "archive",
-    "application/x-rar": "archive",
-    "application/x-7z-compressed": "archive",
+    "application/(zip|gzip|zstd|bzip2|vnd\\.rar)": "archive",
+    "application/x-(xz|x-tar|x-gzip|x-bzip2|x-xz|x-rar|x-rar-compressed|x-7z-compressed)": "archive",
+    "application/(rar|7z.*|tar|xz|bzip.*|lzma|compress|archive|cpio|arj|xar|ms-cab.*)": "archive",
+    "application/(iso9660-image|qemu-disk|ms-wim|apple-diskimage)": "archive",
+    "application/virtualbox-(vhd|vhdx)": "archive",
+    "application/(debian.*-package|redhat-package-manager|rpm|android\\.package-archive)": "archive",
     "inode/directory": "folder",
-    "application/octet-stream": "remime",
+    "font/.*": "font",
+    "application/ms-opentype": "font",
+    "application/font-.*": "font",
+    "application/x-font-.*": "font",
 }
 r""" Default value of the field path 'Rovr Config interface mime_rules' """
 
@@ -88,6 +94,10 @@ r""" Default value of the field path 'Rovr Config interface nerd_font' """
 
 _ROVR_CONFIG_INTERFACE_PREVIEW_TEXT_ERROR_DEFAULT = "couldn't read this file! (¬_¬ )"
 r""" Default value of the field path 'Rovr Config interface preview_text error' """
+
+
+_ROVR_CONFIG_INTERFACE_PREVIEW_TEXT_FONT_TEXT_DEFAULT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\noO08 iIlL1 g9qCQG a@ 5sS\n{} [==>  ] (*) <> ~-+ /\\\n"
+r""" Default value of the field path 'Rovr Config interface preview_text font_text' """
 
 
 _ROVR_CONFIG_INTERFACE_PREVIEW_TEXT_START_DEFAULT = (
@@ -600,23 +610,29 @@ class _RovrConfigInterface(TypedDict, total=False):
     compact_mode: "_RovrConfigInterfaceCompactMode"
     mime_rules: dict[str, "_RovrConfigInterfaceMimeRulesAdditionalproperties"]
     r"""
-    Map MIME type patterns to preview types. Supports glob patterns (e.g., 'text/*' matches 'text/plain', 'text/html', etc.). Valid preview types: text, image, pdf, archive, folder, remime.
+    Map MIME type patterns to preview types. Uses regex patterns. Valid preview types: text, image, pdf, archive, folder, resvg, font, remime.
     -> Use 'remime' if you want a more accurate description from file(1)
 
     default:
-      application/gzip: archive
-      application/octet-stream: remime
+      application/(debian.*-package|redhat-package-manager|rpm|android\.package-archive): archive
+      application/(iso9660-image|qemu-disk|ms-wim|apple-diskimage): archive
+      application/(json|javascript|xml|raml\+yaml): text
+      application/(mbox|ndjson|wine-extension-ini): text
+      application/(rar|7z.*|tar|xz|bzip.*|lzma|compress|archive|cpio|arj|xar|ms-cab.*): archive
+      application/(zip|gzip|zstd|bzip2|vnd\.rar): archive
+      application/font-.*: font
+      application/ms-opentype: font
       application/pdf: pdf
-      application/x-7z-compressed: archive
-      application/x-bzip2: archive
-      application/x-rar: archive
-      application/x-tar: archive
-      application/x-xz: archive
-      application/zip: archive
-      image/*: image
-      image/svg+xml: resvg
+      application/virtualbox-(vhd|vhdx): archive
+      application/x-(xz|x-tar|x-gzip|x-bzip2|x-xz|x-rar|x-rar-compressed|x-7z-compressed): archive
+      application/x-(yaml|script|pem-file|subrip|typescript): text
+      application/x-font-.*: font
+      font/.*: font
+      image/(avif|hei.|jxl): image
+      image/.*: image
+      image/svg\+xml: resvg
       inode/directory: folder
-      text/*: text
+      text/.*: text
     """
 
 
@@ -696,6 +712,7 @@ _RovrConfigInterfaceMimeRulesAdditionalproperties = (
     | Literal["folder"]
     | Literal["remime"]
     | Literal["resvg"]
+    | Literal["font"]
 )
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_TEXT: Literal["text"] = "text"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
@@ -712,6 +729,8 @@ r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_REMIME: Literal["remime"] = "remime"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_RESVG: Literal["resvg"] = "resvg"
+r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
+_ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_FONT: Literal["font"] = "font"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
 
 
@@ -733,6 +752,17 @@ class _RovrConfigInterfacePreviewText(TypedDict, total=False):
  _ _ ___
 | | |  _|
  \_/|_|
+
+    """
+
+    font_text: str
+    r"""
+    When a font file is previewed, this text will be rendered in the font if possible.
+
+    default: abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+oO08 iIlL1 g9qCQG a@ 5sS
+{} [==>  ] (*) <> ~-+ /\
 
     """
 
