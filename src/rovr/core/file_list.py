@@ -1,5 +1,5 @@
 from os import getcwd, listdir, path
-from typing import ClassVar, Iterable, Self, Sequence, cast
+from typing import Callable, ClassVar, Iterable, Self, Sequence, cast
 
 from textual import events, on, work
 from textual.binding import BindingType
@@ -120,6 +120,7 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
         add_to_session: bool = True,
         focus_on: str | None = None,
         has_selected: bool = False,
+        callback: Callable | None = None,
     ) -> None:
         """Update the file list with the current directory contents.
 
@@ -127,6 +128,7 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
             add_to_session (bool): Whether to add the current directory to the session history.
             focus_on (str | None): A custom item to set the focus as.
             has_selected (bool): Whether there are selected items in the file list (used for session management).
+            callback (Callable | None): A callback function to call after updating the file list.
         """
         cwd = path_utils.normalise(getcwd())
 
@@ -302,6 +304,8 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
                 self.update_border_subtitle()
         finally:
             self.file_list_pause_check = False  # ty: ignore[invalid-assignment]
+            if callback:
+                callback()
 
     @work(thread=True, exclusive=True)
     def update_from_session(

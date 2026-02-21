@@ -643,12 +643,11 @@ class Application(App, inherit_bindings=False):
             state_manager.apply_folder_sort_prefs(normalise(getcwd()))
 
         self.file_list.update_file_list(
-            add_to_session=add_to_history, focus_on=focus_on, has_selected=has_selected
+            add_to_session=add_to_history,
+            focus_on=focus_on,
+            has_selected=has_selected,
+            callback=callback,
         )
-        if hasattr(self, "tabWidget"):
-            self.tabWidget.active_tab.session.search = ""
-        if callback:
-            self.call_later(callback)
 
     @work(thread=True)
     def watch_for_changes_and_update(self) -> None:
