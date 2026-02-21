@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `cli`: add logs folder to config-path 550639c
+- `config`: add config migration templates b5a7f61
+- `mimetype`: update puremagic + use regex for matching 92a709b
+- `preview`: add font previewing support 0d4aec5
+
+### Fixed
+- `cli`: silence textual-image warnings c9d3865
+- `metadata`: handle negative unix timestamp because of nt epoch 4e8ba9d
+- `config`: actually point to the error line in the config file 0733791
+- `pdf`: use future annotations to prevent crash faf9f06
+- `app`: download screenshot to proper location 52e6a45
+- `app`: use threading event to stop background thread 907fd86
+- (dev) `cli`: use asyncio to crash when using `--force-crash-in` 53ec6da
+- `footer`: make children use one wide scrollbar 697a686
+- `preview`: force set enter_into to bypass selected folders in the preview 34317f2
+- `app`: call callback directly in FileList c337728
+
 ## [0.8.0.dev1] - 2026-02-16
 
 ### Added
