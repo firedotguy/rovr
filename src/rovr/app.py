@@ -1,3 +1,4 @@
+import asyncio
 import shutil
 import threading
 from contextlib import suppress
@@ -267,7 +268,12 @@ class Application(App, inherit_bindings=False):
         # title for screenshots
         self.title = ""
         if self._force_crash_in > 0:
-            self.set_timer(self._force_crash_in, lambda: 1 / 0)
+            self.call_after_refresh(self._force_crash)
+
+    @work
+    async def _force_crash(self) -> None:
+        await asyncio.sleep(self._force_crash_in)
+        1 / 0
 
     def on_unmount(self) -> None:
         self._shutdown_event.set()
