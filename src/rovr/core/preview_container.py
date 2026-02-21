@@ -633,6 +633,8 @@ class PreviewContainer(Container):
             return
 
         this_list: FileList = self.query_one(FileList)
+        this_list.enter_into = folder_path
+
         self.app.call_from_thread(this_list.set_classes, "file-list")
 
         # Query StateManager for sort preferences for the previewed folder
