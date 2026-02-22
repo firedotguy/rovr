@@ -48,9 +48,9 @@ rovr = "rovr:main"
 
 [dependency-groups]
 build = [
-  "nuitka",
   "zstandard>=0.25.0",
   "poethepoet>=0.41.0",
+  "nuitka>=4.0.0",
 ]
 dev = [
   "poethepoet>=0.41.0",
@@ -74,9 +74,6 @@ build-backend = "uv_build"
 
 [tool.uv]
 compile-bytecode = true
-
-[tool.uv.sources]
-nuitka = { git = "https://github.com/Nuitka/Nuitka", rev = "factory" }
 
 [tool.commitizen]
 name = "cz_conventional_commits"
