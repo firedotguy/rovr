@@ -129,7 +129,9 @@ def find_path_line(lines: list[str], path: list) -> int | None:
             key = stripped.split("=")[0].strip().strip('"').strip("'")
             full_path = current_section + [key]
             if full_path == path_filtered:
+                # exact match
                 best_match_line = i
+                break
     return best_match_line if best_match_line != -1 else None
 
 
@@ -396,11 +398,11 @@ def load_config() -> tuple[dict, RovrConfig]:
 
     # slight config fixes
     # image protocol because "AutoImage" doesn't work with Sixel
-    if config["interface"]["image_protocol"] == "Auto":
+    if config["interface"]["image_viewer"]["protocol"] == "Auto":
         # another no choice fix, because if Auto then
         # AutoImage is grabbed, which sucks in rendering
         # sixel for some weird unknown reason
-        config["interface"]["image_protocol"] = ""  # ty: ignore[invalid-assignment]
+        config["interface"]["image_viewer"]["protocol"] = ""  # ty: ignore[invalid-assignment]
     default_editor = ""  # screw anyone that wants to do this to me
     # editor empty or $EDITOR: expand to actual editor command
     editors = [
