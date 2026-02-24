@@ -63,6 +63,7 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
     def on_mount(self) -> None:
         if not self.dummy and self.parent:
             self.input: Input = self.parent.query_one(Input)
+            self.focus()
 
     @property
     def highlighted_option(self) -> FileListSelectionWidget | None:

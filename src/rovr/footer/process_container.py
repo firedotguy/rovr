@@ -67,6 +67,7 @@ class ProgressBarContainer(VerticalGroup, inherit_bindings=False):
         self.text_label = Label(label, id="label")
         self.label_container = HorizontalGroup(self.icon_label, self.text_label)
 
+    @work
     async def on_mount(self) -> None:
         await self.mount_all([self.label_container, self.progress_bar])
 

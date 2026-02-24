@@ -137,8 +137,10 @@ class Application(App, inherit_bindings=False):
         self._show_keys: bool = show_keys
         self._exit_with_tree: bool = tree_dom
         self._force_crash_in: float = force_crash_in
+
         self._file_list_container = FileListContainer()
         self.file_list = self._file_list_container.filelist
+        # shutdown event for bg thread
         self._shutdown_event = threading.Event()
         # cannot use self.clipboard, reserved for Textual's clipboard
         self.Clipboard = Clipboard(id="clipboard")
@@ -247,8 +249,6 @@ class Application(App, inherit_bindings=False):
             self.query_one("#forward").tooltip = "Go forward in history"
             self.query_one("#up").tooltip = "Go up the directory tree"
 
-        self.file_list = self.query_one("#file_list", FileList)
-        self.file_list.focus()
         # restore UI state from saved state file
         state_manager = self.query_one(StateManager)
         state_manager.restore_state()
@@ -278,13 +278,11 @@ class Application(App, inherit_bindings=False):
     def on_unmount(self) -> None:
         self._shutdown_event.set()
 
-    @work
-    async def action_focus_next(self) -> None:
+    def action_focus_next(self) -> None:
         if config["interface"]["allow_tab_nav"]:
             super().action_focus_next()
 
-    @work
-    async def action_focus_previous(self) -> None:
+    def action_focus_previous(self) -> None:
         if config["interface"]["allow_tab_nav"]:
             super().action_focus_previous()
 
