@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `config`: add config migration templates b5a7f61
 - `mimetype`: update puremagic + use regex for matching 92a709b
 - `preview`: add font previewing support 0d4aec5
+- `preview`: add max image preview size #226
 
 ### Fixed
 - `cli`: silence textual-image warnings c9d3865
@@ -24,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `footer`: make children use one wide scrollbar 697a686
 - `preview`: force set enter_into to bypass selected folders in the preview 34317f2
 - `app`: call callback directly in FileList c337728
+
+### Performance
+- `preview`: move image loading into separate Process #226
+- `filelist`?: use dict and convert to set for faster lookups? d120056
 
 ## [0.8.0.dev1] - 2026-02-16
 
