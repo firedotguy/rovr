@@ -157,7 +157,7 @@ def _await_resample_futures(
             )
             for future in done:
                 ordered_results[futures[future]] = future.result()
-    except BaseException:
+    except Exception:
         for future in pending:
             future.cancel()
         executor.shutdown(wait=False, cancel_futures=True)
@@ -194,7 +194,7 @@ def resample_batch(images: list[PILImage]) -> list[PILImage]:
             executor.submit(resample_worker, payload): index
             for index, payload in enumerate(payloads)
         }
-    except BaseException:
+    except Exception:
         executor.shutdown(wait=False, cancel_futures=True)
         raise
     results = _await_resample_futures(executor, futures)

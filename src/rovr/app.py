@@ -187,7 +187,7 @@ class Application(App, inherit_bindings=False):
                 yield ProcessContainer()
                 yield MetadataContainer(id="metadata")
                 yield self.Clipboard
-            yield StateManager(id="state_manager")
+            yield StateManager()
 
     def on_mount(self) -> None:
         # exit for tree print
@@ -500,8 +500,6 @@ class Application(App, inherit_bindings=False):
             return
         match response.mode:
             case "background":
-                import asyncio
-
                 proc = await asyncio.create_subprocess_shell(
                     response.command,
                     stdin=asyncio.subprocess.DEVNULL,
@@ -700,10 +698,10 @@ class Application(App, inherit_bindings=False):
                 pins_mtime = new_mtime
                 if new_mtime is not None:
                     # no, this doesn't need to be called from thread
-                    # wtf is wrong with you coderabbit, one day you say
-                    # it has to be called from thread, and the other day
-                    # you say it shouldn't be called from thread, make up
-                    # your mind (but i already made up my own.)
+                    # this is _not_ a sync function, it is a worker
+                    # and workers run separate from a thread, so there
+                    # really is no issue here, thanks to any AI
+                    # models raising false issues on thread safety
                     self.query_one(PinnedSidebar).reload_pins()
                     reload_called = True
             # check state.toml

@@ -30,6 +30,16 @@ class StateDict(TypedDict):
     sort_descending: bool
 
 
+_sort_by_options: list[str] = [
+    "name",
+    "size",
+    "modified",
+    "created",
+    "extension",
+    "natural",
+]
+
+
 class StateManager(Widget):
     DEFAULT_CSS = """
     StateManager {
@@ -45,8 +55,8 @@ class StateManager(Widget):
     sort_descending: reactive[bool] = reactive(False, init=False)
     custom_sort_enabled: reactive[bool] = reactive(False, init=False)
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self) -> None:
+        super().__init__(id="state_manager")
         self.state_file: str = path.join(VAR_TO_DIR["CONFIG"], "state.toml")
         self.current_version: str = get_version()
         self.previous_version: str | None = None
@@ -98,14 +108,7 @@ class StateManager(Widget):
                     ):
                         self.menu_wrapper_visible = menu_wrapper_visible
                     sort_by = loaded_state.get("sort_by", "name")
-                    if sort_by not in [
-                        "name",
-                        "size",
-                        "modified",
-                        "created",
-                        "extension",
-                        "natural",
-                    ]:
+                    if sort_by not in _sort_by_options:
                         sort_by = "name"
                     # clearly sort_by = "name" wouldn't lead to the condition being true
                     elif self.sort_by != sort_by:
@@ -135,6 +138,9 @@ class StateManager(Widget):
         try:
             with open(self.state_file, "w", encoding="utf-8") as f:
                 # peak hardcoding
+                # i refuse to add tomli-w just for this, and
+                # tomllib is still read only, so writing manually
+                # is the best option for now (source: trust me bro)
                 f.write(f"""current_version = "{self.current_version}"
 pinned_sidebar_visible = {str(self.pinned_sidebar_visible).lower()}
 preview_sidebar_visible = {str(self.preview_sidebar_visible).lower()}
@@ -288,14 +294,7 @@ sort_descending = {str(self.sort_descending).lower()}
             with open(self.state_file, "rb") as f:
                 loaded_state: StateDict = cast(StateDict, tomli.load(f))
                 sort_by = loaded_state.get("sort_by", "name")
-                if sort_by not in [
-                    "name",
-                    "size",
-                    "modified",
-                    "created",
-                    "extension",
-                    "natural",
-                ]:
+                if sort_by not in _sort_by_options:
                     sort_by = "name"
                 sort_descending = loaded_state.get("sort_descending", False)
 
