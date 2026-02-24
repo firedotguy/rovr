@@ -28,6 +28,7 @@ VAR_TO_DIR: PlatformDirsVars = {
     "VIDEOS": dirs.user_videos_dir.replace("\\", "/"),
     "CONFIG": dirs.user_config_dir.replace("\\", "/"),
 }
+SORTED_VARS = sorted(VAR_TO_DIR.items(), key=lambda x: len(x[1]), reverse=True)
 
 ASCII_ICONS = {
     "general": {

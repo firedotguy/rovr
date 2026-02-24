@@ -4,13 +4,12 @@ from copy import deepcopy
 from os import path
 from typing import TypedDict, cast
 
-from rovr.variables.maps import (
-    VAR_TO_DIR,
-)
+from rovr.variables.maps import SORTED_VARS, VAR_TO_DIR
 
 from .path import dump_exc, normalise
 
 pins = {}
+pin_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
 
 
 class PinsDict(TypedDict):
@@ -33,12 +32,11 @@ def load_pins() -> PinsDict:
     # until an issue gets raised in the future
     global pins
     _pins: PinsDict
-    user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
 
     # Ensure the user's config directory exists
     if not path.exists(VAR_TO_DIR["CONFIG"]):
         os.makedirs(VAR_TO_DIR["CONFIG"])
-    if not path.exists(user_pins_file_path):
+    if not path.exists(pin_path):
         _pins = {
             "default": [
                 {"name": "Home", "path": "$HOME"},
@@ -52,13 +50,13 @@ def load_pins() -> PinsDict:
             "pins": [],
         }
         try:
-            with open(user_pins_file_path, "w") as f:
+            with open(pin_path, "w") as f:
                 json.dump(_pins, f, indent=2)
         except IOError as exc:
             dump_exc(None, exc)
 
     try:
-        with open(user_pins_file_path, "r") as f:
+        with open(pin_path, "r") as f:
             loaded = json.load(f)
         if not isinstance(loaded, dict):
             raise ValueError()
@@ -126,7 +124,6 @@ def add_pin(pin_name: str, pin_path: str | bytes) -> None:
         "path": pin_path_normalized,
     })
 
-    sorted_vars = sorted(VAR_TO_DIR.items(), key=lambda x: len(x[1]), reverse=True)
     for section_key in ["default", "pins"]:
         if section_key in pins_to_write:
             for item in pins_to_write[section_key]:
@@ -135,12 +132,11 @@ def add_pin(pin_name: str, pin_path: str | bytes) -> None:
                     and "path" in item
                     and isinstance(item["path"], str)
                 ):
-                    for var, dir_path_val in sorted_vars:
+                    for var, dir_path_val in SORTED_VARS:
                         item["path"] = item["path"].replace(dir_path_val, f"${var}")
 
     try:
-        user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
-        with open(user_pins_file_path, "w") as f:
+        with open(pin_path, "w") as f:
             json.dump(pins_to_write, f, indent=2)
     except IOError as exc:
         dump_exc(None, exc)
@@ -167,7 +163,7 @@ def remove_pin(pin_path: str | bytes) -> None:
             if not (isinstance(pin, dict) and pin.get("path") == pin_path_normalized)
         ]
 
-    sorted_vars = sorted(VAR_TO_DIR.items(), key=lambda x: len(x[1]), reverse=True)
+    SORTED_VARS = sorted(VAR_TO_DIR.items(), key=lambda x: len(x[1]), reverse=True)
     for section_key in ["default", "pins"]:
         if section_key in pins_to_write:
             for item in pins_to_write[section_key]:
@@ -176,12 +172,11 @@ def remove_pin(pin_path: str | bytes) -> None:
                     and "path" in item
                     and isinstance(item["path"], str)
                 ):
-                    for var, dir_path_val in sorted_vars:
+                    for var, dir_path_val in SORTED_VARS:
                         item["path"] = item["path"].replace(dir_path_val, f"${var}")
 
     try:
-        user_pins_file_path = path.join(VAR_TO_DIR["CONFIG"], "pins.json")
-        with open(user_pins_file_path, "w") as f:
+        with open(pin_path, "w") as f:
             json.dump(pins_to_write, f, indent=2)
     except IOError as exc:
         dump_exc(None, exc)

@@ -5,6 +5,7 @@ from textual.css.query import NoMatches
 from textual.widgets import Button, OptionList
 from textual.widgets.option_list import Option
 
+from rovr.classes.type_aliases import SortByOptions
 from rovr.components import PopupOptionList
 from rovr.functions.icons import get_icon, get_toggle_button_icon
 from rovr.functions.utils import check_key, get_shortest_bind
@@ -101,7 +102,9 @@ class SortOrderPopup(PopupOptionList):
         super().__init__()
         self.do_adjust: bool = False
 
-    def on_mount(self, event: events.Mount) -> None:  # ty: ignore[invalid-method-override]
+    def on_mount(
+        self, event: events.Mount
+    ) -> None:  # ty: ignore[invalid-method-override]
         self.button: SortOrderButton = self.app.query_one(SortOrderButton)
         self.styles.scrollbar_size_vertical = 0
         # calling super()._on_mount is useless, and super().mount()
@@ -206,11 +209,6 @@ class SortOrderPopup(PopupOptionList):
             # Toggle custom sort for this folder
             state_manager.toggle_custom_sort()
         else:
-            # Change sort_by
-            from typing import cast
-
-            from rovr.variables.constants import SortByOptions
-
             state_manager.set_sort_preference(
                 sort_by=cast(SortByOptions, event.option.id)
             )

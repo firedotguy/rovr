@@ -3,8 +3,8 @@ import os
 from os import path
 from typing import TypedDict, cast
 
-from rovr.variables.constants import SortByOptions
-from rovr.variables.maps import VAR_TO_DIR
+from rovr.classes.type_aliases import SortByOptions
+from rovr.variables.maps import SORTED_VARS, VAR_TO_DIR
 
 from .path import normalise
 
@@ -65,12 +65,11 @@ def save_folder_prefs() -> None:
     """Save folder preferences to the JSON file."""
     global folder_prefs
     prefs_file = path.join(VAR_TO_DIR["CONFIG"], "folder_preferences.json")
-    sorted_vars = sorted(VAR_TO_DIR.items(), key=lambda x: len(x[1]), reverse=True)
 
     collapsed: dict[str, FolderPrefDict] = {}
     for folder_path, pref in folder_prefs.items():
         folder_path = normalise(folder_path)
-        for var, dir_path_val in sorted_vars:
+        for var, dir_path_val in SORTED_VARS:
             folder_path = folder_path.replace(dir_path_val, f"${var}")
         collapsed[folder_path] = pref
 

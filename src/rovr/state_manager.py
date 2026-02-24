@@ -8,6 +8,7 @@ from textual.css.query import NoMatches
 from textual.reactive import reactive
 from textual.widget import Widget
 
+from rovr.classes.type_aliases import SortByOptions
 from rovr.functions.config import get_version
 from rovr.functions.folder_prefs import (
     get_folder_pref,
@@ -16,7 +17,6 @@ from rovr.functions.folder_prefs import (
     set_folder_pref,
 )
 from rovr.functions.path import normalise
-from rovr.variables.constants import SortByOptions
 from rovr.variables.maps import VAR_TO_DIR
 
 

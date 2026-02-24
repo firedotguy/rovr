@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from os import environ
 from shutil import which
-from typing import Literal, TypeAlias, cast
+from typing import Literal, cast
 
 from textual.binding import Binding, BindingType
 
@@ -146,7 +146,3 @@ bindings: list[BindingType] = (
 )
 
 os_type = platform.system()
-
-SortByOptions: TypeAlias = Literal[
-    "name", "size", "modified", "created", "extension", "natural"
-]

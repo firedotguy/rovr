@@ -6,7 +6,7 @@ import re
 import stat
 import subprocess
 from os import path
-from typing import Callable, Literal, NamedTuple, TypeAlias, TypedDict, overload
+from typing import Callable, Literal, NamedTuple, TypedDict, overload
 
 import psutil
 import puremagic
@@ -16,29 +16,23 @@ from rich.traceback import Traceback
 from textual import work
 from textual.app import App
 from textual.dom import DOMNode
-from textual.highlight import guess_language
 
+from rovr.classes.type_aliases import (
+    DirEntryType,
+    DirEntryTypes,
+    PreviewTypes,
+    SortByOptions,
+)
 from rovr.functions.icons import get_icon_for_file, get_icon_for_folder
 from rovr.variables.constants import config, log_name, os_type
-
-# windows needs nt, because os.scandir returns
-# nt.DirEntry instead of os.DirEntry on
-# windows. weird, yes, but I can't do anything
-if os_type == "Windows":
-    import nt
-
-    DirEntryType: TypeAlias = os.DirEntry | nt.DirEntry
-    DirEntryTypes = (os.DirEntry, nt.DirEntry)
-else:
-    DirEntryType: TypeAlias = os.DirEntry
-    DirEntryTypes = os.DirEntry
 
 pprint = Console().print
 
 mime_re_cache: dict[
-    Literal["text", "image", "pdf", "archive", "folder", "remime", "resvg", "font"],
+    PreviewTypes,
     list[re.Pattern],
 ] = {}
+mime_preview_cache: dict[str, PreviewTypes | None] = {}
 
 
 def normalise(*location: str | bytes) -> str:
@@ -209,9 +203,7 @@ def threaded_get_cwd_object(
     node: DOMNode,
     cwd: str,
     show_hidden: bool = False,
-    sort_by: Literal[
-        "name", "size", "modified", "created", "extension", "natural"
-    ] = "name",
+    sort_by: SortByOptions = "name",
     reverse: bool = False,
     return_nothing_if_this_returns_true: Callable[[], bool] | None = None,
 ) -> (
@@ -237,9 +229,7 @@ def sync_get_cwd_object(
     dom_node: DOMNode,
     cwd: str,
     show_hidden: bool = False,
-    sort_by: Literal[
-        "name", "size", "modified", "created", "extension", "natural"
-    ] = "name",
+    sort_by: SortByOptions = "name",
     reverse: bool = False,
 ) -> tuple[list[CWDObjectReturnDict], list[CWDObjectReturnDict]]: ...
 
@@ -249,9 +239,7 @@ def sync_get_cwd_object(
     dom_node: DOMNode,
     cwd: str,
     show_hidden: bool = False,
-    sort_by: Literal[
-        "name", "size", "modified", "created", "extension", "natural"
-    ] = "name",
+    sort_by: SortByOptions = "name",
     reverse: bool = False,
     return_nothing_if_this_returns_true: Callable[[], bool] | None = None,
 ) -> (
@@ -657,6 +645,9 @@ def match_mime_to_preview_type(
         str : The preview type ("text", "image", "pdf", "archive", "folder")
         None: None if no rule matches
     """
+    if mime_type in mime_preview_cache:
+        return mime_preview_cache[mime_type]
+
     global mime_re_cache
 
     if not mime_re_cache:
@@ -669,7 +660,9 @@ def match_mime_to_preview_type(
     for preview_type, patterns in mime_re_cache.items():
         for pattern in patterns:
             if pattern.fullmatch(mime_type):
+                mime_preview_cache[mime_type] = preview_type
                 return preview_type
+    mime_preview_cache[mime_type] = None
     return None
 
 
@@ -729,6 +722,8 @@ def get_mime_type(
     # If puremagic didn't recognise it, it might perhaps be a plain text file
     if "basic" not in ignore:
         try:
+            from textual.highlight import guess_language
+
             content = file_bytes.decode("utf-8")
             return MimeResult(
                 "basic", f"text/{guess_language(content, file_path)}", content

@@ -199,10 +199,12 @@ class FileList(CheckboxRenderingMixin, SelectionList, inherit_bindings=False):
                         )
                         for item in file_list_options
                     ]
-                    items_in_cwd = [item["name"] for item in file_list_options]
-                    if focus_on in items_in_cwd:
-                        to_highlight_index = items_in_cwd.index(focus_on)
-                    self.items_in_cwd = set(items_in_cwd)
+                    name_to_index: dict[str, int] = {
+                        item["name"]: i for i, item in enumerate(file_list_options)
+                    }
+                    self.items_in_cwd = set(name_to_index)
+                    if focus_on in name_to_index:
+                        to_highlight_index = name_to_index[focus_on]
 
             except PermissionError:
                 self.list_of_options.append(
