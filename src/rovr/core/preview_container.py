@@ -154,7 +154,19 @@ class PreviewContainer(Container):
         return LoadingPreview()
 
     def on_preview_container_set_loading(self, event: SetLoading) -> None:
-        self.set_loading(event.to)
+        if event.to:
+            if self._loading_debounce_timer is not None:
+                # means that it keeps trying to set loading to true, so just
+                # let the timer run so it goes into loading like we want
+                return
+            self._loading_debounce_timer = self.set_timer(
+                0.2, lambda: self.set_loading(True)
+            )
+        else:
+            if self._loading_debounce_timer is not None:
+                self._loading_debounce_timer.stop()
+                self._loading_debounce_timer = None
+            self.set_loading(False)
 
     def has_child(self, selector: str) -> DOMNode | None:
         """
