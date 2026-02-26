@@ -820,11 +820,9 @@ class PreviewContainer(Container):
             if should_cancel():
                 return
 
-            file_list = (
-                FileList(
-                    classes="archive-list",
-                    dummy=True,
-                ),
+            file_list = FileList(
+                classes="archive-list",
+                dummy=True,
             )
 
             self.app.call_from_thread(self.mount, file_list)
@@ -899,7 +897,11 @@ class PreviewContainer(Container):
             self.app.call_from_thread(setattr, self, "border_subtitle", "")
             if should_cancel():
                 return
-            self._cached_size = self.size
+            try:
+                self._cached_size = self.size
+            except LookupError as exc:
+                path_utils.dump_exc(self, exc)
+                pass
             self.post_message(self.SetLoading(True))
 
             # Reset PDF state when changing files
