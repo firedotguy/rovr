@@ -6,6 +6,7 @@ from functools import partial
 from io import BytesIO
 from os import path
 from time import time
+from typing import cast
 
 import textual_image.widget
 from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
@@ -17,8 +18,10 @@ from textual import events, on, work
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.css.query import NoMatches
+from textual.dom import DOMNode
 from textual.highlight import guess_language
 from textual.message import Message
+from textual.timer import Timer
 from textual.widget import Widget
 from textual.widgets import Static
 from textual.widgets.selection_list import Selection
@@ -137,6 +140,7 @@ class PreviewContainer(Container):
         self._mime_type: path_utils.MimeResult | None = None
         self._preview_texts: dict[str, str] = config["interface"]["preview_text"]
         self.pdf = PDFHandler()
+        self._loading_debounce_timer: Timer | None = None
 
     def compose(self) -> ComposeResult:
         yield Static(self._preview_texts["start"], classes="special")
@@ -152,7 +156,7 @@ class PreviewContainer(Container):
     def on_preview_container_set_loading(self, event: SetLoading) -> None:
         self.set_loading(event.to)
 
-    def has_child(self, selector: str) -> bool:
+    def has_child(self, selector: str) -> DOMNode | None:
         """
         Check for whether this element contains this selector or not
         Args:
@@ -162,10 +166,9 @@ class PreviewContainer(Container):
             bool: whether the selector is valid
         """
         try:
-            self.query_one(selector)
-            return True
+            return self.query_one(selector)
         except NoMatches:
-            return False
+            return None
 
     def show_font_preview(self) -> None:
         """Show font preview with PIL.ImageFont and a custom PIL.ImageDraw"""
@@ -246,7 +249,9 @@ class PreviewContainer(Container):
             return
 
         try:
-            if not self.has_child(".image_preview"):
+            if image_widget := self.has_child(".image_preview"):
+                self.app.call_from_thread(setattr, image_widget, "image", img)
+            else:
                 self.app.call_from_thread(self.remove_children)
 
                 if should_cancel():
@@ -256,12 +261,6 @@ class PreviewContainer(Container):
                 # no need to resample, already ensured that canvas is max size
                 image_widget.can_focus = True
                 self.app.call_from_thread(self.mount, image_widget)
-            else:
-                try:
-                    image_widget = self.query_one(".image_preview")
-                    self.app.call_from_thread(setattr, image_widget, "image", img)
-                except NoMatches:
-                    return
         except Exception as exc:
             if should_cancel():
                 return
@@ -289,7 +288,13 @@ class PreviewContainer(Container):
             pil_object = preview_utils.resample(Image.open(BytesIO(png_bytes)))
             # force a load
             pil_object.load()
-            if not self.has_child(".image_preview"):
+
+            if should_cancel():
+                return
+
+            if image_widget := self.has_child(".image_preview"):
+                self.app.call_from_thread(setattr, image_widget, "image", pil_object)
+            else:
                 self.app.call_from_thread(self.remove_children)
 
                 if should_cancel():
@@ -298,16 +303,6 @@ class PreviewContainer(Container):
                 image_widget = NewImage(pil_object)
                 image_widget.can_focus = True
                 self.app.call_from_thread(self.mount, image_widget)
-            else:
-                try:
-                    if should_cancel():
-                        return
-                    image_widget = self.query_one(".image_preview")
-                    self.app.call_from_thread(
-                        setattr, image_widget, "image", pil_object
-                    )
-                except NoMatches:
-                    return
         except ValueError as exc:
             if should_cancel():
                 return
@@ -369,7 +364,11 @@ class PreviewContainer(Container):
             )
             return
 
-        if not self.has_child(".image_preview"):
+        if image_widget := self.has_child(".image_preview"):
+            if should_cancel():
+                return
+            self.app.call_from_thread(setattr, image_widget, "image", pil_object)
+        else:
             self.app.call_from_thread(self.remove_children)
 
             if should_cancel():
@@ -378,18 +377,6 @@ class PreviewContainer(Container):
             image_widget = NewImage(pil_object)
             image_widget.can_focus = True
             self.app.call_from_thread(self.mount, image_widget)
-        else:
-            try:
-                if should_cancel():
-                    return
-                image_widget = self.query_one(".image_preview")
-                self.app.call_from_thread(setattr, image_widget, "image", pil_object)
-            except NoMatches:
-                if should_cancel() or depth >= 1:
-                    return
-                self.app.call_from_thread(self.remove_children)
-                self.show_image_preview(depth=depth + 1)
-                return
 
         if should_cancel():
             return
@@ -531,7 +518,11 @@ class PreviewContainer(Container):
 
         current_image = self.pdf.images[self.pdf.current_page]
 
-        if not self.has_child(".image_preview"):
+        if image_widget := self.has_child(".image_preview"):
+            if should_cancel():
+                return
+            self.app.call_from_thread(setattr, image_widget, "image", current_image)
+        else:
             self.app.call_from_thread(self.remove_children)
             self.app.call_from_thread(self.remove_class, "bat", "full", "clip")
 
@@ -541,17 +532,6 @@ class PreviewContainer(Container):
             image_widget = NewImage(current_image)
             image_widget.can_focus = True
             self.app.call_from_thread(self.mount, image_widget)
-        else:
-            try:
-                if should_cancel():
-                    return
-                image_widget = self.query_one(".image_preview")
-                self.app.call_from_thread(setattr, image_widget, "image", current_image)
-            except Exception:
-                if should_cancel() or depth >= 1:
-                    return
-                self.app.call_from_thread(self.remove_children)
-                self.show_pdf_preview(depth=depth + 1)
 
         if should_cancel():
             return
@@ -598,7 +578,11 @@ class PreviewContainer(Container):
                 if should_cancel():
                     return False
 
-                if not self.has_child("Static"):
+                if static_widget := self.has_child("Static"):
+                    self.log("Using existing Static")
+                    self.app.call_from_thread(static_widget.update, new_content)
+                    self.app.call_from_thread(static_widget.set_classes, "bat_preview")
+                else:
                     self.log("Mounting new Static")
                     self.app.call_from_thread(self.remove_children)
 
@@ -610,11 +594,6 @@ class PreviewContainer(Container):
                     if should_cancel():
                         return False
                     static_widget.can_focus = True
-                else:
-                    self.log("Using existing Static")
-                    static_widget: Static = self.query_one(Static)
-                    self.app.call_from_thread(static_widget.update, new_content)
-                    self.app.call_from_thread(static_widget.set_classes, "bat_preview")
 
                 return True
             else:
@@ -703,16 +682,15 @@ class PreviewContainer(Container):
         if should_cancel():
             return
 
-        if not self.has_child("Static"):
+        if static_widget := self.has_child("Static"):
+            self.app.call_from_thread(static_widget.update, syntax)
+        else:
             self.app.call_from_thread(self.remove_children)
 
             if should_cancel():
                 return
 
             self.app.call_from_thread(self.mount, Static(syntax))
-        else:
-            static_widget = self.query_one(Static)
-            self.app.call_from_thread(static_widget.update, syntax)
 
         if should_cancel():
             return
@@ -723,26 +701,24 @@ class PreviewContainer(Container):
             return
         self.app.call_from_thread(setattr, self, "border_title", titles.folder)
 
-        if not self.has_child("FileList"):
+        if not (this_list := self.has_child("FileList")):
             self.app.call_from_thread(self.remove_children)
 
             if should_cancel():
                 return
 
-            self.app.call_from_thread(
-                self.mount,
-                FileList(
-                    name=folder_path,
-                    classes="file-list",
-                    dummy=True,
-                    enter_into=folder_path,
-                ),
+            this_list = FileList(
+                name=folder_path,
+                classes="file-list",
+                dummy=True,
+                enter_into=folder_path,
             )
+            self.app.call_from_thread(self.mount, this_list)
 
         if should_cancel():
             return
 
-        this_list: FileList = self.query_one(FileList)
+        assert isinstance(this_list, FileList)
         this_list.enter_into = folder_path
 
         self.app.call_from_thread(this_list.set_classes, "file-list")
@@ -819,24 +795,25 @@ class PreviewContainer(Container):
             return
         self.app.call_from_thread(setattr, self, "border_title", titles.archive)
 
-        if not self.has_child("FileList"):
+        if not (file_list := self.has_child("FileList")):
             self.app.call_from_thread(self.remove_children)
 
             if should_cancel():
                 return
 
-            self.app.call_from_thread(
-                self.mount,
+            file_list = (
                 FileList(
                     classes="archive-list",
                     dummy=True,
                 ),
             )
 
+            self.app.call_from_thread(self.mount, file_list)
+
         if should_cancel():
             return
 
-        file_list = self.query_one(FileList)
+        assert isinstance(file_list, FileList)
 
         self.app.call_from_thread(file_list.set_classes, "archive-list")
         options = []
@@ -1106,8 +1083,7 @@ class PreviewContainer(Container):
                 except (subprocess.SubprocessError, FileNotFoundError) as exc:
                     path_utils.dump_exc(self, exc)
 
-        if self.has_child("Static"):
-            static_widget: Static = self.query_one(Static)
+        if static_widget := self.has_child("Static"):
             self.app.call_from_thread(static_widget.update, display_content)
             self.app.call_from_thread(static_widget.set_classes, "special")
         else:
@@ -1116,7 +1092,8 @@ class PreviewContainer(Container):
                 return
             static_widget = Static(display_content, classes="special")
             self.app.call_from_thread(self.mount, static_widget)
-        static_widget.can_focus = True
+        # not wasting an isinstance on this
+        cast(Static, static_widget).can_focus = True
 
     def on_mouse_scroll_up(self, event: events.MouseScrollUp) -> None:
         """Handle mouse scroll up for PDF navigation."""
