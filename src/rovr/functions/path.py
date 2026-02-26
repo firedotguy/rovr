@@ -24,7 +24,7 @@ from rovr.classes.type_aliases import (
     SortByOptions,
 )
 from rovr.functions.icons import get_icon_for_file, get_icon_for_folder
-from rovr.variables.constants import config, log_name, os_type
+from rovr.variables.constants import config, file_executable, log_name, os_type
 
 pprint = Console().print
 
@@ -736,7 +736,7 @@ def get_mime_type(
     if "file1" not in ignore:
         try:
             process = subprocess.run(
-                ["file", "--mime-type", "-b", file_path],
+                [file_executable, "--mime-type", "-b", file_path],
                 capture_output=True,
                 text=True,
                 check=True,
