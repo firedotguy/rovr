@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import subprocess
 from dataclasses import dataclass
 from functools import partial
@@ -897,11 +898,8 @@ class PreviewContainer(Container):
             self.app.call_from_thread(setattr, self, "border_subtitle", "")
             if should_cancel():
                 return
-            try:
+            with contextlib.suppress(LookupError):
                 self._cached_size = self.size
-            except LookupError as exc:
-                path_utils.dump_exc(self, exc)
-                pass
             self.post_message(self.SetLoading(True))
 
             # Reset PDF state when changing files
