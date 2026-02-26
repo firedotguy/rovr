@@ -19,6 +19,7 @@ from textual.app import ComposeResult
 from textual.containers import Container
 from textual.css.query import NoMatches
 from textual.dom import DOMNode
+from textual.geometry import Size
 from textual.highlight import guess_language
 from textual.message import Message
 from textual.timer import Timer
@@ -139,6 +140,12 @@ class PreviewContainer(Container):
         self._file_mtime: float | None = None
         self._mime_type: path_utils.MimeResult | None = None
         self._preview_texts: dict[str, str] = config["interface"]["preview_text"]
+        # this is kind of necessary, take a look at
+        # https://github.com/NSPC911/textual-trials/blob/master/loading_has_no_size.py
+        # if a widget enters the loading state, it hides itself (i think)
+        # so it essentially has zero height and width
+        # caching it solves it, so i guess we are caching it for now /shrug
+        self._cached_size: Size | None = None
         self.pdf = PDFHandler()
         self._loading_debounce_timer: Timer | None = None
 
@@ -563,7 +570,7 @@ class PreviewContainer(Container):
             if config["interface"]["show_line_numbers"]
             else "--style=plain",
         ]
-        max_lines = self.size.height
+        max_lines = self._cached_size.height
         if max_lines > 0:
             command.append(f"--line-range=:{max_lines}")
         command.extend(["--", self._current_file_path])
@@ -660,13 +667,13 @@ class PreviewContainer(Container):
                 return
 
         lines = self._current_content.splitlines()
-        max_lines = self.size.height
+        max_lines = self._cached_size.height
         if max_lines > 0:
             if len(lines) > max_lines:
                 lines = lines[:max_lines]
         else:
             lines = []
-        max_width = self.size.width * 2
+        max_width = self._cached_size.width * 2
         if max_width > 0:
             processed_lines = []
             for line in lines:
@@ -892,6 +899,7 @@ class PreviewContainer(Container):
             self.app.call_from_thread(setattr, self, "border_subtitle", "")
             if should_cancel():
                 return
+            self._cached_size = self.size
             self.post_message(self.SetLoading(True))
 
             # Reset PDF state when changing files
