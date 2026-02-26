@@ -1,5 +1,4 @@
 import json
-import os
 from os import path
 from typing import TypedDict, cast
 
@@ -26,8 +25,6 @@ def load_folder_prefs() -> dict[str, FolderPrefDict]:
     """
     global folder_prefs
     prefs_file = path.join(VAR_TO_DIR["CONFIG"], "folder_preferences.json")
-
-    os.makedirs(VAR_TO_DIR["CONFIG"], exist_ok=True)
 
     if not path.exists(prefs_file):
         folder_prefs = {}
