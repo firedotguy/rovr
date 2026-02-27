@@ -120,7 +120,7 @@ async def _copy_windows(paths: list[str]) -> ProcessResult | None:
         exc.add_note("powershell clipboard command timed out")
         raise exc from None
     return ProcessResult(
-        return_code=process.return_code or 0,
+        return_code=process.returncode or 0,
         args=command,
         stdout=stdout.decode().strip(),
         stderr=stderr.decode().strip(),
