@@ -92,6 +92,7 @@ _ROVR_CONFIG_INTERFACE_MIME_RULES_DEFAULT = {
     "application/ms-opentype": "font",
     "application/font-.*": "font",
     "application/x-font-.*": "font",
+    "video/mp4": "video"
 }
 r""" Default value of the field path 'Rovr Config interface mime_rules' """
 
@@ -640,6 +641,7 @@ class _RovrConfigInterface(TypedDict, total=False):
       image/svg\+xml: resvg
       inode/directory: folder
       text/.*: text
+      video/mp4: video
     """
 
 

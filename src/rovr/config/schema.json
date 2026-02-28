@@ -107,6 +107,7 @@
             "fps_decrease_factor": {
               "type": "integer",
               "default": 3,
+              "minimum": 1,
               "description": "FPS decrease factor"
             },
             "pause_icon_type": {
@@ -122,7 +123,7 @@
             },
             "show_controls": {
                 "type": "boolean",
-                "default": "true",
+                "default": true,
                 "description": "Whether to show player controls (pause button and time)"
             }
           }
