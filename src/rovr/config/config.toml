@@ -24,7 +24,7 @@ max_size = [4000, 4000]
 
 [interface.video_viewer]
 protocol = "Halfcell"
-fps_decrease_factor = 5
+fps_decrease_factor = 3
 pause_icon_type = 'unicode'
 show_controls = true
 show_track = true

@@ -730,7 +730,7 @@ class _RovrConfigInterfaceVideoViewer(TypedDict, total=False):
     r"""
     FPS decrease factor
 
-    default: 1
+    default: 3
     """
 
     pause_icon_type: "_RovrConfigInterfaceVideoViewerPauseIconType"

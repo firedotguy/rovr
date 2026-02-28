@@ -363,7 +363,6 @@ class PreviewContainer(Container):
         self.app.call_from_thread(self.mount, VideoPlayer(
             self._current_file_path,
             image_type=ImageType(config["interface"]["video_viewer"]["protocol"]),
-            # render_delay=0.03, # temporarily fixes assertions with sixel, will be fixed in future
             fps_decrease_factor=config["interface"]["video_viewer"]["fps_decrease_factor"],
             pause_icon_type=IconType(config["interface"]["video_viewer"]["pause_icon_type"]),
             show_controls=config["interface"]["video_viewer"]["show_controls"],
