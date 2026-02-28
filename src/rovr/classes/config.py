@@ -579,6 +579,9 @@ class _RovrConfigInterface(TypedDict, total=False):
     image_viewer: "_RovrConfigInterfaceImageViewer"
     r""" Settings related to the image viewer used in the preview sidebar """
 
+    video_viewer: "_RovrConfigInterfaceVideoViewer"
+    r""" Settings related to the video viewer used in the preview sidebar """
+
     allow_tab_nav: bool
     r"""
     Allow navigating the main app screen with `tab` and `shift+tab`
@@ -713,6 +716,45 @@ class _RovrConfigInterfaceImageViewer(TypedDict, total=False):
     """
 
 
+class _RovrConfigInterfaceVideoViewer(TypedDict, total=False):
+    r"""Settings related to the video viewer used in the preview sidebar"""
+
+    protocol: "_RovrConfigInterfaceImageViewerProtocol"
+    r"""
+    The image protocol to use when displaying an video
+
+    default: Halfcell
+    """
+
+    fps_decrease_factor: int
+    r"""
+    FPS decrease factor
+
+    default: 1
+    """
+
+    pause_icon_type: "_RovrConfigInterfaceVideoViewerPauseIconType"
+    r"""
+    Pause button icon type.
+
+    default: nerd
+    """
+
+    show_track: bool
+    r"""
+    Whether to show player track
+
+    default: True
+    """
+
+    show_controls: bool
+    r"""
+    Whether to show player controls (pause button and time)
+
+    default: True
+    """
+
+
 _RovrConfigInterfaceImageViewerMaxSizeItem = int
 r""" minimum: 1 """
 
@@ -767,6 +809,18 @@ r"""The values for the 'The resampling method to use when resizing images. This 
 _ROVRCONFIGINTERFACEIMAGEVIEWERRESAMPLING_HAMMING: Literal["hamming"] = "hamming"
 r"""The values for the 'The resampling method to use when resizing images. This is only applicable when the image exceeds the maximum size specified in `max_size`' enum"""
 
+_RovrConfigInterfaceVideoViewerPauseIconType = (
+    Literal["unicode"]
+    | Literal["emoji"]
+    | Literal["ascii"]
+    | Literal["nerd"]
+)
+r"""
+Pause button icon type.
+
+default: nerd
+"""
+
 
 _RovrConfigInterfaceMimeRulesAdditionalproperties = (
     Literal["text"]
@@ -777,6 +831,7 @@ _RovrConfigInterfaceMimeRulesAdditionalproperties = (
     | Literal["remime"]
     | Literal["resvg"]
     | Literal["font"]
+    | Literal["video"]
 )
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_TEXT: Literal["text"] = "text"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
@@ -795,6 +850,8 @@ r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_RESVG: Literal["resvg"] = "resvg"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
 _ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_FONT: Literal["font"] = "font"
+r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
+_ROVRCONFIGINTERFACEMIMERULESADDITIONALPROPERTIES_VIDEO: Literal["video"] = "video"
 r"""The values for the '_RovrConfigInterfaceMimeRulesAdditionalproperties' enum"""
 
 
