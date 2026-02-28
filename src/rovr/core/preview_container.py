@@ -10,8 +10,6 @@ from time import time
 from typing import cast
 
 import textual_image.widget
-from textual_video import VideoPlayer
-from textual_video.enums import IconType, ImageType
 from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 from PIL.Image import Image as PILImage
 from resvg_py import svg_to_bytes
@@ -29,6 +27,8 @@ from textual.timer import Timer
 from textual.widget import Widget
 from textual.widgets import Static
 from textual.widgets.selection_list import Selection
+from textual_video import VideoPlayer
+from textual_video.enums import IconType, ImageType
 
 from rovr.classes.archive import Archive, BadArchiveError
 from rovr.classes.textual_options import (
@@ -362,12 +362,12 @@ class PreviewContainer(Container):
             return
         self.app.call_from_thread(self.mount, VideoPlayer(
             self._current_file_path,
-            image_type=ImageType(config['interface']['video_viewer']['protocol']),
+            image_type=ImageType(config["interface"]["video_viewer"]["protocol"]),
             # render_delay=0.03, # temporarily fixes assertions with sixel, will be fixed in future
-            fps_decrease_factor=config['interface']['video_viewer']['fps_decrease_factor'],
-            pause_icon_type=IconType(config['interface']['video_viewer']['pause_icon_type']),
-            show_controls=config['interface']['video_viewer']['show_controls'],
-            show_track=config['interface']['video_viewer']['show_track']
+            fps_decrease_factor=config["interface"]["video_viewer"]["fps_decrease_factor"],
+            pause_icon_type=IconType(config["interface"]["video_viewer"]["pause_icon_type"]),
+            show_controls=config["interface"]["video_viewer"]["show_controls"],
+            show_track=config["interface"]["video_viewer"]["show_track"]
         ))
 
         if should_cancel():
